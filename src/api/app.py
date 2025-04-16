@@ -1681,7 +1681,7 @@ def update_candidate(resume_id):
     Only the candidate who owns the profile can update it.
     """
     current_user_id = get_jwt_identity()
-    user = User.find_by_id(current_user_id)
+    user = User.find_by_email(current_user_id)
     
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -1696,84 +1696,104 @@ def update_candidate(resume_id):
         return jsonify({"error": "No data provided"}), 400
     
     try:
-        # Connect to database
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        # Update candidate basic information
-        cursor.execute('''
-            UPDATE candidates
-            SET name = ?, email = ?, phone = ?, location = ?, title = ?, summary = ?, domain = ?
-            WHERE resume_id = ?
-        ''', (
-            data.get('name', ''),
-            data.get('email', ''),
-            data.get('phone', ''),
-            data.get('location', ''),
-            data.get('title', ''),
-            data.get('summary', ''),
-            data.get('domain', ''),
-            resume_id
-        ))
-        
-        # Handle skills update - first delete existing skills
-        cursor.execute('DELETE FROM candidate_skills WHERE resume_id = ?', (resume_id,))
-        
-        # Add new skills
-        all_skills = data.get('primary_skills', []) + data.get('secondary_skills', [])
-        for skill in all_skills:
-            cursor.execute('''
-                INSERT INTO candidate_skills (resume_id, skill_id, level, is_primary, experience_years)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (
-                resume_id,
-                skill.get('skill_id', ''),
-                skill.get('level', 5),
-                skill.get('is_primary', True),
-                skill.get('experience_years', 1)
-            ))
-        
-        # Handle education - delete existing entries
-        cursor.execute('DELETE FROM candidate_education WHERE resume_id = ?', (resume_id,))
-        
-        # Add new education entries
-        for edu in data.get('education', []):
-            cursor.execute('''
-                INSERT INTO candidate_education (resume_id, degree, institution, graduation_year)
-                VALUES (?, ?, ?, ?)
-            ''', (
-                resume_id,
-                edu.get('degree', ''),
-                edu.get('institution', ''),
-                edu.get('graduation_year', 0)
-            ))
-        
-        # Handle experience - delete existing entries
-        cursor.execute('DELETE FROM candidate_experience WHERE resume_id = ?', (resume_id,))
-        
-        # Add new experience entries
-        for exp in data.get('experience', []):
-            exp_id = str(uuid.uuid4())
-            cursor.execute('''
-                INSERT INTO candidate_experience (experience_id, resume_id, job_title, company, start_date, end_date)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''', (
-                exp_id,
-                resume_id,
-                exp.get('job_title', ''),
-                exp.get('company', ''),
-                exp.get('start_date', ''),
-                exp.get('end_date', '')
-            ))
+        with kg.driver.session() as session:
+            # Update candidate basic information
+            session.run("""
+                MATCH (c:Candidate {resume_id: $resume_id})
+                SET c.name = $name,
+                    c.email = $email,
+                    c.phone = $phone,
+                    c.location = $location,
+                    c.title = $title,
+                    c.summary = $summary,
+                    c.domain = $domain
+            """, {
+                "resume_id": resume_id,
+                "name": data.get('name', ''),
+                "email": data.get('email', ''),
+                "phone": data.get('phone', ''),
+                "location": data.get('location', ''),
+                "title": data.get('title', ''),
+                "summary": data.get('summary', ''),
+                "domain": data.get('domain', '')
+            })
             
-            # Add experience details
-            for desc in exp.get('description', []):
-                cursor.execute('''
-                    INSERT INTO candidate_experience_details (experience_id, detail)
-                    VALUES (?, ?)
-                ''', (exp_id, desc))
-        
-        conn.commit()
+            # Remove existing skills
+            session.run("""
+                MATCH (c:Candidate {resume_id: $resume_id})-[r:HAS_CORE_SKILL|HAS_SECONDARY_SKILL]->(s:Skill)
+                DELETE r
+            """, {"resume_id": resume_id})
+            
+            # Add primary skills
+            for skill in data.get('primary_skills', []):
+                session.run("""
+                    MATCH (s:Skill {skill_id: $skill_id})
+                    MATCH (c:Candidate {resume_id: $resume_id})
+                    CREATE (c)-[r:HAS_CORE_SKILL {
+                        level: $level,
+                        years: $years,
+                        proficiency: $proficiency
+                    }]->(s)
+                """, {
+                    "resume_id": resume_id,
+                    "skill_id": skill.get('skill_id', ''),
+                    "level": skill.get('level', 5),
+                    "years": skill.get('experience_years', 1),
+                    "proficiency": skill.get('proficiency', 'Intermediate')
+                })
+            
+            # Add secondary skills
+            for skill in data.get('secondary_skills', []):
+                session.run("""
+                    MATCH (s:Skill {skill_id: $skill_id})
+                    MATCH (c:Candidate {resume_id: $resume_id})
+                    CREATE (c)-[r:HAS_SECONDARY_SKILL {
+                        level: $level,
+                        years: $years,
+                        proficiency: $proficiency
+                    }]->(s)
+                """, {
+                    "resume_id": resume_id,
+                    "skill_id": skill.get('skill_id', ''),
+                    "level": skill.get('level', 3),
+                    "years": skill.get('experience_years', 0.5),
+                    "proficiency": skill.get('proficiency', 'Beginner')
+                })
+            
+            # Update education
+            session.run("""
+                MATCH (c:Candidate {resume_id: $resume_id})
+                SET c.education = $education
+            """, {
+                "resume_id": resume_id,
+                "education": json.dumps(data.get('education', []))
+            })
+            
+            # Handle experience - first remove old experiences
+            session.run("""
+                MATCH (c:Candidate {resume_id: $resume_id})-[r:HAS_EXPERIENCE]->(e:Experience)
+                DETACH DELETE e
+            """, {"resume_id": resume_id})
+            
+            # Add new experiences
+            for exp in data.get('experience', []):
+                session.run("""
+                    MATCH (c:Candidate {resume_id: $resume_id})
+                    CREATE (c)-[:HAS_EXPERIENCE]->(e:Experience {
+                        job_title: $job_title,
+                        company: $company,
+                        start_date: $start_date,
+                        end_date: $end_date,
+                        description: $description
+                    })
+                """, {
+                    "resume_id": resume_id,
+                    "job_title": exp.get('job_title', ''),
+                    "company": exp.get('company', ''),
+                    "start_date": exp.get('start_date', ''),
+                    "end_date": exp.get('end_date', ''),
+                    "description": json.dumps(exp.get('description', []))
+                })
         
         return jsonify({
             "success": True,
@@ -1784,9 +1804,6 @@ def update_candidate(resume_id):
     except Exception as e:
         app.logger.error(f"Error updating profile: {str(e)}")
         return jsonify({"error": f"Error updating profile: {str(e)}"}), 500
-    finally:
-        if conn:
-            conn.close()
 
 @app.route('/api/jobs/<job_id>/update', methods=['PUT'])
 @jwt_required()
@@ -1797,7 +1814,7 @@ def update_job(job_id):
     Only the hiring manager who owns the job can update it.
     """
     current_user_id = get_jwt_identity()
-    user = User.find_by_id(current_user_id)
+    user = User.find_by_email(current_user_id)
     
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -1812,89 +1829,94 @@ def update_job(job_id):
         return jsonify({"error": "No data provided"}), 400
     
     try:
-        # Connect to database
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        
-        # Check if user owns the job
-        cursor.execute('''
-            SELECT owner_email FROM jobs WHERE job_id = ?
-        ''', (job_id,))
-        
-        job_info = cursor.fetchone()
-        if not job_info:
-            return jsonify({"error": "Job not found"}), 404
-        
-        # Only job owner or admin can update
-        if job_info['owner_email'] != user.email and user.role != 'admin':
-            return jsonify({"error": "You don't have permission to update this job"}), 403
-        
-        # Update job basic information
-        cursor.execute('''
-            UPDATE jobs
-            SET title = ?, company = ?, location = ?, domain = ?, job_type = ?, summary = ?, salary_range = ?
-            WHERE job_id = ?
-        ''', (
-            data.get('title', ''),
-            data.get('company', ''),
-            data.get('location', ''),
-            data.get('domain', ''),
-            data.get('job_type', ''),
-            data.get('summary', ''),
-            data.get('salary_range', ''),
-            job_id
-        ))
-        
-        # Handle job responsibilities - delete existing entries
-        cursor.execute('DELETE FROM job_responsibilities WHERE job_id = ?', (job_id,))
-        
-        # Add new responsibilities
-        for resp in data.get('responsibilities', []):
-            cursor.execute('''
-                INSERT INTO job_responsibilities (job_id, responsibility)
-                VALUES (?, ?)
-            ''', (job_id, resp))
-        
-        # Handle job qualifications - delete existing entries
-        cursor.execute('DELETE FROM job_qualifications WHERE job_id = ?', (job_id,))
-        
-        # Add new qualifications
-        for qual in data.get('qualifications', []):
-            cursor.execute('''
-                INSERT INTO job_qualifications (job_id, qualification)
-                VALUES (?, ?)
-            ''', (job_id, qual))
-        
-        # Handle skills update - first delete existing skills
-        cursor.execute('DELETE FROM job_skills WHERE job_id = ?', (job_id,))
-        
-        # Add primary skills
-        for skill in data.get('primary_skills', []):
-            cursor.execute('''
-                INSERT INTO job_skills (job_id, skill_id, level, is_primary, importance)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (
-                job_id,
-                skill.get('skill_id', ''),
-                skill.get('level', 5),
-                True,
-                skill.get('importance', 0.7)
-            ))
-        
-        # Add secondary skills
-        for skill in data.get('secondary_skills', []):
-            cursor.execute('''
-                INSERT INTO job_skills (job_id, skill_id, level, is_primary, importance)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (
-                job_id,
-                skill.get('skill_id', ''),
-                skill.get('level', 3),
-                False,
-                skill.get('importance', 0.3)
-            ))
-        
-        conn.commit()
+        with kg.driver.session() as session:
+            # Check if user owns the job
+            result = session.run("""
+                MATCH (j:Job {job_id: $job_id})
+                RETURN j.owner_email as owner_email
+            """, {"job_id": job_id})
+            
+            record = result.single()
+            if not record:
+                return jsonify({"error": "Job not found"}), 404
+            
+            # Only job owner or admin can update
+            if record["owner_email"] != user.email and user.role != 'admin':
+                return jsonify({"error": "You don't have permission to update this job"}), 403
+            
+            # Update job basic information
+            session.run("""
+                MATCH (j:Job {job_id: $job_id})
+                SET j.title = $title,
+                    j.company = $company,
+                    j.location = $location,
+                    j.domain = $domain,
+                    j.job_type = $job_type,
+                    j.summary = $summary,
+                    j.salary_range = $salary_range
+            """, {
+                "job_id": job_id,
+                "title": data.get('title', ''),
+                "company": data.get('company', ''),
+                "location": data.get('location', ''),
+                "domain": data.get('domain', ''),
+                "job_type": data.get('job_type', ''),
+                "summary": data.get('summary', ''),
+                "salary_range": data.get('salary_range', '')
+            })
+            
+            # Update responsibilities and qualifications
+            session.run("""
+                MATCH (j:Job {job_id: $job_id})
+                SET j.responsibilities = $responsibilities,
+                    j.qualifications = $qualifications
+            """, {
+                "job_id": job_id,
+                "responsibilities": json.dumps(data.get('responsibilities', [])),
+                "qualifications": json.dumps(data.get('qualifications', []))
+            })
+            
+            # Remove existing skills
+            session.run("""
+                MATCH (j:Job {job_id: $job_id})-[r:REQUIRES_PRIMARY|REQUIRES_SECONDARY]->(s:Skill)
+                DELETE r
+            """, {"job_id": job_id})
+            
+            # Add primary skills
+            for skill in data.get('primary_skills', []):
+                session.run("""
+                    MATCH (s:Skill {skill_id: $skill_id})
+                    MATCH (j:Job {job_id: $job_id})
+                    CREATE (j)-[r:REQUIRES_PRIMARY {
+                        level: $level,
+                        proficiency: $proficiency,
+                        importance: $importance
+                    }]->(s)
+                """, {
+                    "job_id": job_id,
+                    "skill_id": skill.get('skill_id', ''),
+                    "level": skill.get('level', 5),
+                    "proficiency": skill.get('proficiency', 'Intermediate'),
+                    "importance": skill.get('importance', 0.7)
+                })
+            
+            # Add secondary skills
+            for skill in data.get('secondary_skills', []):
+                session.run("""
+                    MATCH (s:Skill {skill_id: $skill_id})
+                    MATCH (j:Job {job_id: $job_id})
+                    CREATE (j)-[r:REQUIRES_SECONDARY {
+                        level: $level,
+                        proficiency: $proficiency,
+                        importance: $importance
+                    }]->(s)
+                """, {
+                    "job_id": job_id,
+                    "skill_id": skill.get('skill_id', ''),
+                    "level": skill.get('level', 3),
+                    "proficiency": skill.get('proficiency', 'Beginner'),
+                    "importance": skill.get('importance', 0.4)
+                })
         
         return jsonify({
             "success": True,
@@ -1905,9 +1927,60 @@ def update_job(job_id):
     except Exception as e:
         app.logger.error(f"Error updating job: {str(e)}")
         return jsonify({"error": f"Error updating job: {str(e)}"}), 500
-    finally:
-        if conn:
-            conn.close()
+
+# Skill analysis functions
+def analyze_skill_gap(candidate_id, job_id):
+    # Cypher query to find skills the job requires but candidate lacks
+    query = """
+    MATCH (j:Job {job_id: $job_id})-[:REQUIRES_PRIMARY|REQUIRES_SECONDARY]->(s:Skill)
+    WHERE NOT EXISTS{
+      MATCH (c:Candidate {resume_id: $candidate_id})-[:HAS_CORE_SKILL|HAS_SECONDARY_SKILL]->(s)
+    }
+    RETURN DISTINCT s.name AS missing_skill, s.category AS category, 
+           s.relevance AS importance
+    ORDER BY s.relevance DESC
+    """
+    
+    # Additional query to find related skills the candidate already has
+    related_query = """
+    MATCH (j:Job {job_id: $job_id})-[:REQUIRES_PRIMARY|REQUIRES_SECONDARY]->(target:Skill)
+    MATCH (c:Candidate {resume_id: $candidate_id})-[:HAS_CORE_SKILL|HAS_SECONDARY_SKILL]->(existing:Skill)
+    MATCH (existing)-[:related_to]-(target)
+    WHERE NOT EXISTS{
+      MATCH (c)-[:HAS_CORE_SKILL|HAS_SECONDARY_SKILL]->(target)
+    }
+    RETURN DISTINCT target.name AS target_skill, existing.name AS related_skill,
+           target.relevance AS importance
+    ORDER BY target.relevance DESC
+    """
+    
+    # Execute queries and process results
+    with kg.driver.session() as session:
+        missing_skills = session.run(query, candidate_id=candidate_id, job_id=job_id).data()
+        related_skills = session.run(related_query, candidate_id=candidate_id, job_id=job_id).data()
+    
+    return {
+        "missing_skills": missing_skills,
+        "related_skills": related_skills
+    }
+
+# API endpoints for skill analysis
+@app.route('/api/analysis/skill-gap/<candidate_id>/<job_id>', methods=['GET'])
+@jwt_required()
+def analyze_skill_gap_endpoint(candidate_id, job_id):
+    try:
+        # Verify user has permission to access this data
+        current_user_id = get_jwt_identity()
+        user = User.find_by_email(current_user_id)
+        
+        # Only allow access for the candidate themselves, or hiring managers/admins
+        if user.role == 'candidate' and user.profile_id != candidate_id and user.role != 'admin':
+            return jsonify({"error": "Unauthorized access"}), 403
+        
+        result = analyze_skill_gap(candidate_id, job_id)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', API_PORT))

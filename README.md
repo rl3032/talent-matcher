@@ -7,7 +7,7 @@ Talent Matcher is a comprehensive skill-based job matching platform that uses gr
 - **Skill-Based Matching**: Advanced algorithm for matching candidates to jobs based on skills, location, and semantic analysis of experience
 - **Knowledge Graph**: Uses Neo4j graph database to model relationships between skills, jobs, and candidates
 - **Interactive Skill Visualization**: Explore skill relationships and discover related skills
-- **Career Path Recommendations**: Get recommendations to bridge skill gaps for target jobs
+- **Skill Gap Analysis**: Identify missing skills and leverage existing related skills for job opportunities
 - **Comprehensive API**: Full-featured REST API for all platform functionality
 - **Role-Based Access Control**: Secure endpoints and user interfaces based on user roles (admin, hiring manager, job seeker)
 - **Complete CRUD Operations**: Create, read, update, and delete functionality for resumes and job postings
@@ -88,7 +88,7 @@ Talent Matcher is a comprehensive skill-based job matching platform that uses gr
 
 Talent Matcher supports three user roles, each with specific permissions:
 
-- **Job Seekers**: Can upload and edit resumes, view matching jobs, and access their own profile data
+- **Job Seekers**: Can upload and edit resumes, view matching jobs, analyze skill gaps, and access their own profile data
 - **Hiring Managers**: Can post, edit, and delete job listings, view and filter candidates matching their job posts
 - **Administrators**: Have full access to all features and user management
 

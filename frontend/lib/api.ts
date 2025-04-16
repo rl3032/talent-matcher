@@ -148,14 +148,10 @@ export const apiClient = {
 
   // Update job posting
   async updateJob(jobId: string, jobData: any): Promise<any> {
-    // Get token from localStorage
     const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("Authentication required");
 
-    if (!token) {
-      throw new Error("You must be logged in to update a job");
-    }
-
-    const response = await fetch(`${API_BASE_URL}/jobs/${jobId}/update`, {
+    const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -222,10 +218,25 @@ export const apiClient = {
   },
 
   // Skill gap analysis
-  getSkillGap: (resumeId: string, jobId: string) =>
-    fetch(
-      `${API_BASE_URL}/candidates/${resumeId}/jobs/${jobId}/skill-gap`
-    ).then((res) => res.json()),
+  async getSkillGap(candidateId: string, jobId: string): Promise<any> {
+    const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("Authentication required");
+
+    const response = await fetch(
+      `${API_BASE_URL}/analysis/skill-gap/${candidateId}/${jobId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch skill gap analysis");
+    }
+
+    return response.json();
+  },
 
   // Recommendations
   getSkillRecommendations: (
@@ -256,12 +267,6 @@ export const apiClient = {
       `${API_BASE_URL}/skills/path?start=${startSkill}&end=${endSkill}&max_depth=${
         maxDepth || 3
       }`
-    ).then((res) => res.json()),
-
-  // Career path
-  getCareerPath: (currentTitle: string, targetTitle: string) =>
-    fetch(
-      `${API_BASE_URL}/careers/path?current=${currentTitle}&target=${targetTitle}`
     ).then((res) => res.json()),
 
   // Skill graph data
