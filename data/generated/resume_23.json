@@ -1,0 +1,270 @@
+{
+  "resume_id": "resume_23",
+  "name": "Liam Wang",
+  "email": "liamwang@outlook.com",
+  "phone": "+1-604-992-8685",
+  "location": "Edmonton, AB",
+  "title": "Research Scientist",
+  "summary": "Dynamic and detail-oriented Research Scientist with a strong foundation in data science and analytics. Leveraging 2+ years of experience in machine learning, data visualization, and predictive analytics, I excel in transforming complex data into actionable insights to drive strategic business decisions. Proficient in R, Tableau, and Pandas, with a proven track record of leading data-driven projects and enhancing team collaboration.",
+  "experience": [
+    {
+      "job_title": "Research Scientist",
+      "company": "Northern Code",
+      "start_date": "2024-04",
+      "end_date": "Present",
+      "description": [
+        "Utilized Tableau for analysis",
+        "Built and optimized solutions using Pandas",
+        "Led Data Visualization initiatives resulting in improved performance",
+        "Analyzed large datasets to extract valuable insights",
+        "Developed predictive models to support business decisions"
+      ],
+      "skills_used": [
+        "Tableau",
+        "Pandas",
+        "Data Visualization",
+        "SQL",
+        "Teamwork"
+      ]
+    },
+    {
+      "job_title": "Research Scientist",
+      "company": "CodeByte Inc.",
+      "start_date": "2021-10",
+      "end_date": "2024-03",
+      "description": [
+        "Developed and maintained applications using R",
+        "Led Machine Learning initiatives resulting in improved performance",
+        "Led Data Visualization initiatives resulting in improved performance",
+        "Created data visualizations and presentations for stakeholders",
+        "Developed predictive models to support business decisions"
+      ],
+      "skills_used": [
+        "R",
+        "Machine Learning",
+        "Data Visualization",
+        "Teamwork",
+        "Communication"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Analytics",
+      "institution": "Simon Fraser University",
+      "graduation_year": 2018
+    }
+  ],
+  "certifications": [
+    "Certified Analytics Professional (CAP)",
+    "Tableau Desktop Specialist",
+    "Machine Learning Certificate by Coursera"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 1.8,
+        "is_core": true
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "beginner",
+        "experience_years": 1.8,
+        "is_core": true
+      },
+      {
+        "skill_id": "pandas",
+        "name": "Pandas",
+        "category": "frameworks",
+        "proficiency": "beginner",
+        "experience_years": 0.8,
+        "is_core": true
+      },
+      {
+        "skill_id": "tableau",
+        "name": "Tableau",
+        "category": "tools",
+        "proficiency": "beginner",
+        "experience_years": 1.5,
+        "is_core": true
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.7,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 1.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "beginner",
+        "experience_years": 1.9,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "beginner",
+        "experience_years": 1.8,
+        "is_core": false
+      }
+    ],
+    "domain": "data_science"
+  },
+  "skill_relationships": [
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.6799999999999999
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.6799999999999999
+    },
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.6799999999999999
+    },
+    {
+      "source": "pandas",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.58
+    },
+    {
+      "source": "tableau",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 0.65
+    },
+    {
+      "source": "tableau",
+      "target": "sql",
+      "type": "complementary_to",
+      "weight": 0.65
+    },
+    {
+      "source": "tableau",
+      "target": "data_analysis",
+      "type": "complementary_to",
+      "weight": 0.65
+    },
+    {
+      "source": "data_visualization",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.57
+    },
+    {
+      "source": "data_visualization",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.57
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.55
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "data_analysis",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.55
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 0.55
+    },
+    {
+      "source": "sql",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.65
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.69
+    }
+  ]
+}

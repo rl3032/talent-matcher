@@ -1,0 +1,244 @@
+{
+  "job_id": "job_3",
+  "title": "Research Scientist",
+  "company": "Tech Neural Labs",
+  "location": "Waterloo, ON",
+  "domain": "data_science",
+  "job_type": "Full-time",
+  "summary": "Tech Neural Labs is seeking a highly skilled Research Scientist to join our innovative team in Waterloo, ON. This role focuses on leveraging advanced data science techniques to drive cutting-edge research and development in the field of machine learning and artificial intelligence.",
+  "responsibilities": [
+    "Design and implement advanced machine learning models to solve complex data science problems.",
+    "Collaborate with cross-functional teams to define project goals and deliverables.",
+    "Conduct deep learning research and apply findings to enhance existing models and algorithms.",
+    "Develop and maintain SQL databases to support data-driven decision making.",
+    "Visualize data insights through advanced data visualization techniques to communicate findings effectively to stakeholders.",
+    "Explore and evaluate new data sources, tools, and methodologies to improve research outcomes.",
+    "Document research methodologies and results in a clear and concise manner.",
+    "Mentor and guide junior team members in their research and development activities."
+  ],
+  "qualifications": [
+    "Ph.D. or Master's degree in Computer Science, Data Science, Statistics, or a related field.",
+    "Expertise in machine learning with a proven track record of implementing successful models.",
+    "Intermediate proficiency in deep learning techniques and data visualization tools.",
+    "Advanced skills in SQL and experience with large-scale data processing.",
+    "Proficiency in R for statistical analysis and data manipulation.",
+    "Strong problem-solving skills with the ability to tackle complex challenges.",
+    "Experience with TensorFlow and Pandas is a strong asset.",
+    "Excellent teamwork and communication skills, with a collaborative mindset."
+  ],
+  "salary_range": "Competitive",
+  "skills": {
+    "primary": [
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.862818377696242
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.8879635573798974
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.8879502345963085
+      },
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.9926939643679906
+      },
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.9731605772223152
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "advanced",
+        "is_primary": false,
+        "importance": 0.5243033812522765
+      },
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "is_primary": false,
+        "importance": 0.4533978978553594
+      },
+      {
+        "skill_id": "pandas",
+        "name": "Pandas",
+        "category": "frameworks",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.6692891052832401
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.5390604558814898
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.5419349107380889
+      }
+    ]
+  },
+  "skill_relationships": [
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 1.0
+    },
+    {
+      "source": "deep_learning",
+      "target": "data_visualization",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "r",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "sql",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_visualization",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "data_visualization",
+      "target": "r",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_visualization",
+      "target": "sql",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_visualization",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "r",
+      "target": "sql",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "r",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "sql",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "sql",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "data_analysis",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "pandas",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    }
+  ]
+}

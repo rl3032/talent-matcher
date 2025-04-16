@@ -1,0 +1,225 @@
+{
+  "job_id": "job_1",
+  "title": "Data Science Manager",
+  "company": "Net Science",
+  "location": "London, ON",
+  "domain": "data_science",
+  "job_type": "Full-time",
+  "summary": "Net Science is seeking a highly skilled and motivated Data Science Manager to lead our team of data scientists in London, ON. The ideal candidate will have a strong background in machine learning, deep learning, and data visualization, with a passion for deriving insights from complex datasets to drive business decisions.",
+  "responsibilities": [
+    "Lead and manage a team of data scientists, providing mentorship, guidance, and professional development opportunities.",
+    "Develop and implement advanced machine learning models and deep learning algorithms to solve complex business problems.",
+    "Oversee the design and creation of data visualizations to effectively communicate insights to stakeholders.",
+    "Collaborate with cross-functional teams to integrate data-driven solutions into existing systems and workflows.",
+    "Ensure the accuracy, quality, and reliability of data and models through rigorous testing and validation.",
+    "Drive innovation by exploring new technologies and methodologies in the field of data science.",
+    "Manage data science projects from conception to deployment, ensuring timely delivery and alignment with business objectives."
+  ],
+  "qualifications": [
+    "Bachelor\u2019s or Master\u2019s degree in Data Science, Computer Science, Statistics, or a related field.",
+    "5+ years of experience in data science, with at least 2 years in a managerial role.",
+    "Expert proficiency in SQL for database management and data retrieval.",
+    "Advanced skills in machine learning and data visualization tools and techniques.",
+    "Proven expertise in deep learning and experience with TensorFlow.",
+    "Strong problem-solving skills and the ability to think strategically.",
+    "Excellent communication skills to effectively present complex information to non-technical stakeholders.",
+    "Experience with R, Tableau, and Pandas is highly desirable."
+  ],
+  "salary_range": "Competitive",
+  "skills": {
+    "primary": [
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.8374290768690592
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.9188904863814584
+      },
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.9832343807014716
+      },
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.8101505993937365
+      },
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.9453769241289285
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "advanced",
+        "is_primary": false,
+        "importance": 0.4694311596680628
+      },
+      {
+        "skill_id": "tableau",
+        "name": "Tableau",
+        "category": "tools",
+        "proficiency": "advanced",
+        "is_primary": false,
+        "importance": 0.4087204080043075
+      },
+      {
+        "skill_id": "pandas",
+        "name": "Pandas",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "is_primary": false,
+        "importance": 0.43468248179514973
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.5380027674060142
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.5289675868221655
+      }
+    ]
+  },
+  "skill_relationships": [
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_visualization",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "machine_learning",
+      "target": "sql",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "machine_learning",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_visualization",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "data_visualization",
+      "target": "sql",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_visualization",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_visualization",
+      "target": "deep_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "sql",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "sql",
+      "target": "deep_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 1.0
+    },
+    {
+      "source": "tableau",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tableau",
+      "target": "sql",
+      "type": "complementary_to",
+      "weight": 1.0
+    }
+  ]
+}

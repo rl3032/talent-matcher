@@ -1,0 +1,160 @@
+{
+  "resume_id": "resume_11",
+  "name": "Sara Zhang",
+  "email": "sarazhang@gmail.com",
+  "phone": "+1-647-888-9909",
+  "location": "Montreal, QC",
+  "title": "Data Analyst",
+  "summary": "Experienced Data Analyst with over 2 years in the field, specializing in deep learning and data visualization. Proficient in using TensorFlow and R to develop predictive models and analyze large datasets, enhancing business decision-making processes. Known for leading data-driven projects that improve performance and insights. Strong communicator and team player, with a solid foundation in mathematics from Simon Fraser University.",
+  "experience": [
+    {
+      "job_title": "Data Analyst",
+      "company": "Nexus Software",
+      "start_date": "2022-11",
+      "end_date": "Present",
+      "description": [
+        "Built and optimized solutions using TensorFlow",
+        "Led Deep Learning initiatives resulting in improved performance",
+        "Led Data Visualization initiatives resulting in improved performance",
+        "Analyzed large datasets to extract valuable insights",
+        "Developed predictive models to support business decisions"
+      ],
+      "skills_used": [
+        "TensorFlow",
+        "Deep Learning",
+        "Data Visualization",
+        "Problem Solving",
+        "Teamwork"
+      ]
+    },
+    {
+      "job_title": "Data Analyst",
+      "company": "Maple Analytics",
+      "start_date": "2021-07",
+      "end_date": "2022-10",
+      "description": [
+        "Built and optimized solutions using TensorFlow",
+        "Led Data Visualization initiatives resulting in improved performance",
+        "Developed and maintained applications using R",
+        "Developed predictive models to support business decisions",
+        "Analyzed large datasets to extract valuable insights"
+      ],
+      "skills_used": [
+        "TensorFlow",
+        "Data Visualization",
+        "R",
+        "Teamwork",
+        "Communication"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Mathematics",
+      "institution": "Simon Fraser University",
+      "graduation_year": 2021
+    }
+  ],
+  "certifications": [
+    "Certified Data Scientist (CDS)",
+    "TensorFlow Developer Certificate",
+    "Advanced R Programming"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 4.3,
+        "is_core": true
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 4.8,
+        "is_core": true
+      },
+      {
+        "skill_id": "pandas",
+        "name": "Pandas",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "experience_years": 4.9,
+        "is_core": true
+      },
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "intermediate",
+        "experience_years": 4.7,
+        "is_core": true
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 2.9,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 4.4,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 3.0,
+        "is_core": false
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 4.2,
+        "is_core": false
+      }
+    ],
+    "domain": "data_science"
+  },
+  "skill_relationships": [
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.97
+    },
+    {
+      "source": "data_visualization",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.79
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.9400000000000001
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.92
+    }
+  ]
+}

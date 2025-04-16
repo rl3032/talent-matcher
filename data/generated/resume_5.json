@@ -1,0 +1,218 @@
+{
+  "resume_id": "resume_5",
+  "name": "Michael Wang",
+  "email": "michaelwang@yahoo.ca",
+  "phone": "+1-514-905-9106",
+  "location": "Victoria, BC",
+  "title": "Research Scientist",
+  "summary": "Experienced Research Scientist with over 4 years in the data science domain, specializing in machine learning, deep learning, and data analysis. Proven track record of developing advanced predictive models and optimizing machine learning solutions using TensorFlow and R. Adept at extracting meaningful insights from complex datasets to drive strategic business decisions. Strong communicator and team player committed to advancing innovative data-driven solutions.",
+  "experience": [
+    {
+      "job_title": "Research Scientist",
+      "company": "InnovateAI",
+      "start_date": "2023-08",
+      "end_date": "Present",
+      "description": [
+        "Developed and maintained applications using R",
+        "Built and optimized solutions using TensorFlow",
+        "Developed and maintained applications using SQL",
+        "Created data visualizations and presentations for stakeholders",
+        "Analyzed large datasets to extract valuable insights"
+      ],
+      "skills_used": [
+        "R",
+        "TensorFlow",
+        "SQL",
+        "Teamwork",
+        "Communication"
+      ]
+    },
+    {
+      "job_title": "Research Scientist",
+      "company": "Northern Code",
+      "start_date": "2021-04",
+      "end_date": "2023-07",
+      "description": [
+        "Led Data Analysis initiatives resulting in improved performance",
+        "Developed and maintained applications using R",
+        "Led Deep Learning initiatives resulting in improved performance",
+        "Created data visualizations and presentations for stakeholders",
+        "Developed predictive models to support business decisions"
+      ],
+      "skills_used": [
+        "Data Analysis",
+        "R",
+        "Deep Learning",
+        "Communication",
+        "Teamwork"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Mathematics",
+      "institution": "McGill University",
+      "graduation_year": 2010
+    }
+  ],
+  "certifications": [
+    "TensorFlow Developer Certificate",
+    "Certified Data Scientist",
+    "Deep Learning Specialization"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 2.2,
+        "is_core": true
+      },
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "experience_years": 4.2,
+        "is_core": true
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "advanced",
+        "experience_years": 2.9,
+        "is_core": true
+      },
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "advanced",
+        "experience_years": 2.7,
+        "is_core": true
+      },
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 4.1,
+        "is_core": true
+      },
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 4.1,
+        "is_core": true
+      },
+      {
+        "skill_id": "pandas",
+        "name": "Pandas",
+        "category": "frameworks",
+        "proficiency": "intermediate",
+        "experience_years": 2.2,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 4.8,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 4.0,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 2.4,
+        "is_core": false
+      }
+    ],
+    "domain": "data_science"
+  },
+  "skill_relationships": [
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.72
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.72
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.92
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.92
+    },
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.79
+    },
+    {
+      "source": "sql",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.77
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.9099999999999999
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 0.9099999999999999
+    },
+    {
+      "source": "pandas",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.72
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.98
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.9
+    }
+  ]
+}

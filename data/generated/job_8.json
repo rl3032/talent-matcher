@@ -1,0 +1,260 @@
+{
+  "job_id": "job_8",
+  "title": "Data Visualization Specialist",
+  "company": "Quantum Labs",
+  "location": "Calgary, AB",
+  "domain": "data_science",
+  "job_type": "Full-time",
+  "summary": "Quantum Labs is seeking a skilled Data Visualization Specialist to join our dynamic team in Calgary, AB. In this role, you will leverage your expertise in data analysis and deep learning to transform complex datasets into visually compelling insights that drive business decisions. You will collaborate with cross-functional teams to develop innovative visualization solutions that communicate data-driven narratives effectively.",
+  "responsibilities": [
+    "Design and develop advanced data visualization solutions to interpret complex data sets using R and other relevant tools.",
+    "Utilize deep learning and machine learning techniques to analyze data and uncover patterns and insights.",
+    "Collaborate with data scientists and analysts to identify key metrics and create dashboards that support strategic business decisions.",
+    "Implement and optimize machine learning models using TensorFlow to enhance data processing and visualization capabilities.",
+    "Translate technical and statistical information into clear, visually engaging presentations for stakeholders.",
+    "Participate in team meetings to discuss project goals, progress, and outcomes, ensuring alignment and effective communication.",
+    "Provide training and support to team members on data visualization tools and techniques."
+  ],
+  "qualifications": [
+    "Bachelor's or Master's degree in Data Science, Computer Science, Statistics, or a related field.",
+    "Proven experience in data analysis and visualization, with an advanced understanding of R.",
+    "Expertise in deep learning and machine learning, with practical experience using TensorFlow.",
+    "Strong analytical skills and the ability to interpret complex data sets.",
+    "Basic knowledge of SQL and Pandas for data manipulation and query execution.",
+    "Effective teamwork and communication skills to collaborate with multidisciplinary teams.",
+    "Ability to manage multiple projects and meet deadlines in a fast-paced environment."
+  ],
+  "salary_range": "Competitive",
+  "skills": {
+    "primary": [
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.9558982334629191
+      },
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.8021476661031933
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.8765400108091653
+      },
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.9605238385642445
+      },
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.8183265805005447
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "beginner",
+        "is_primary": false,
+        "importance": 0.5257353106370115
+      },
+      {
+        "skill_id": "pandas",
+        "name": "Pandas",
+        "category": "frameworks",
+        "proficiency": "beginner",
+        "is_primary": false,
+        "importance": 0.6228264644844284
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.46774460938620704
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.47019622680715323
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.33971773586199167
+      }
+    ]
+  },
+  "skill_relationships": [
+    {
+      "source": "data_analysis",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "data_analysis",
+      "target": "deep_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_analysis",
+      "target": "r",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_analysis",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_analysis",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 1.0
+    },
+    {
+      "source": "deep_learning",
+      "target": "r",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "r",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "r",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "sql",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "pandas",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "data_visualization",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "data_visualization",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 1.0
+    }
+  ]
+}

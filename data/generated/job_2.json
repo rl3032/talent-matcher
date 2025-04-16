@@ -1,0 +1,272 @@
+{
+  "job_id": "job_2",
+  "title": "Data Analyst",
+  "company": "Vector Web Data",
+  "location": "Quebec City, QC",
+  "domain": "data_science",
+  "job_type": "Full-time",
+  "summary": "Vector Web Data is seeking a highly skilled Data Analyst to join our dynamic team in Quebec City. The ideal candidate will have a strong background in data science, particularly in deep learning and machine learning, and will be responsible for analyzing complex datasets to help drive strategic business decisions.",
+  "responsibilities": [
+    "Develop and implement advanced deep learning models using TensorFlow to analyze large datasets and extract meaningful insights.",
+    "Utilize R to manipulate data and perform statistical analysis to identify trends and patterns.",
+    "Collaborate with cross-functional teams to define, develop, and deliver data-driven solutions that enhance business processes.",
+    "Design and manage machine learning algorithms to support predictive analytics projects.",
+    "Create detailed reports and visualizations using Tableau to communicate findings to stakeholders effectively.",
+    "Conduct ad-hoc queries and analysis using SQL to support various business initiatives.",
+    "Participate in regular team meetings and contribute to the continuous improvement of data analysis processes."
+  ],
+  "qualifications": [
+    "Bachelor\u2019s or Master\u2019s degree in Data Science, Computer Science, Statistics, or a related field.",
+    "3+ years of experience in a data analyst or similar role.",
+    "Advanced knowledge of deep learning techniques and proficiency in TensorFlow.",
+    "Strong programming skills in R and experience with machine learning models.",
+    "Intermediate proficiency in SQL for data querying and manipulation.",
+    "Experience with Tableau and strong skills in data visualization.",
+    "Excellent communication skills and the ability to work collaboratively in a team environment."
+  ],
+  "salary_range": "Competitive",
+  "skills": {
+    "primary": [
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.9405163850413885
+      },
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.8711774483902557
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.8304966153269651
+      },
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.8734362950288033
+      },
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.9488631868495885
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "advanced",
+        "is_primary": false,
+        "importance": 0.6183533448341783
+      },
+      {
+        "skill_id": "tableau",
+        "name": "Tableau",
+        "category": "tools",
+        "proficiency": "advanced",
+        "is_primary": false,
+        "importance": 0.6155758206472194
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.5224022468830286
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.32900780873036045
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.4163049777026765
+      }
+    ]
+  },
+  "skill_relationships": [
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 1.0
+    },
+    {
+      "source": "deep_learning",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "r",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "sql",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tensorflow",
+      "target": "r",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "tensorflow",
+      "target": "sql",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "r",
+      "target": "machine_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "r",
+      "target": "sql",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "machine_learning",
+      "target": "sql",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "sql",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "data_analysis",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tableau",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tableau",
+      "target": "sql",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tableau",
+      "target": "data_analysis",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "data_visualization",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "data_visualization",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 1.0
+    }
+  ]
+}

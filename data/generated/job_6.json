@@ -1,0 +1,247 @@
+{
+  "job_id": "job_6",
+  "title": "Data Science Manager",
+  "company": "Tech Analytics",
+  "location": "Burnaby, BC",
+  "domain": "data_science",
+  "job_type": "Full-time",
+  "summary": "Join Tech Analytics as a Data Science Manager and lead a dynamic team in leveraging advanced data science techniques to drive impactful business decisions. Based in Burnaby, BC, you will manage projects that utilize cutting-edge technologies and methodologies in data analysis, deep learning, and predictive modeling to enhance our service offerings.",
+  "responsibilities": [
+    "Lead and manage a team of data scientists and analysts to deliver high-quality data-driven insights.",
+    "Develop and implement advanced data models using R and Pandas to analyze complex datasets and extract actionable insights.",
+    "Utilize TensorFlow to design and deploy deep learning models that address key business challenges.",
+    "Collaborate with cross-functional teams to integrate data science solutions into the company's products and services.",
+    "Monitor and evaluate the performance of data models and algorithms, ensuring accuracy and efficiency.",
+    "Communicate complex data insights and technical concepts to non-technical stakeholders in a clear and concise manner.",
+    "Drive innovation by exploring new data sources and emerging technologies in machine learning and artificial intelligence.",
+    "Oversee the development of interactive dashboards and reports using Tableau to visualize data findings.",
+    "Ensure best practices in data management and governance are followed across the team.",
+    "Mentor and train team members to foster a culture of continuous learning and improvement."
+  ],
+  "qualifications": [
+    "Bachelor\u2019s or Master\u2019s degree in Data Science, Computer Science, Statistics, or a related field.",
+    "5+ years of experience in data science with a proven track record of managing teams.",
+    "Advanced proficiency in R and Pandas for data manipulation and analysis.",
+    "Expert-level experience in TensorFlow for developing deep learning models.",
+    "Strong understanding of deep learning and machine learning principles.",
+    "Experience with SQL for database querying and management.",
+    "Intermediate skills in Tableau for data visualization and reporting.",
+    "Excellent communication and problem-solving skills.",
+    "Ability to work in a fast-paced environment and manage multiple projects simultaneously."
+  ],
+  "salary_range": "Competitive",
+  "skills": {
+    "primary": [
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.9873661777099599
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.9766664759786056
+      },
+      {
+        "skill_id": "pandas",
+        "name": "Pandas",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.9409981235159308
+      },
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.9269069567838033
+      },
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.8134351612690666
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "tableau",
+        "name": "Tableau",
+        "category": "tools",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.6371587794275962
+      },
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.6190636155613792
+      },
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.6442954630887647
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.43837932197340146
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.34823279904683946
+      }
+    ]
+  },
+  "skill_relationships": [
+    {
+      "source": "data_analysis",
+      "target": "r",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_analysis",
+      "target": "pandas",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_analysis",
+      "target": "deep_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "data_analysis",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "r",
+      "target": "pandas",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "r",
+      "target": "deep_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "r",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "pandas",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "pandas",
+      "target": "deep_learning",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "pandas",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 1.0
+    },
+    {
+      "source": "deep_learning",
+      "target": "tensorflow",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tableau",
+      "target": "sql",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "tableau",
+      "target": "data_analysis",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "sql",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 1.0
+    }
+  ]
+}

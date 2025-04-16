@@ -1,0 +1,228 @@
+{
+  "job_id": "job_5",
+  "title": "Engineering Manager",
+  "company": "DataInsight Solutions",
+  "location": "Calgary, AB",
+  "domain": "software_engineering",
+  "job_type": "Full-time",
+  "summary": "DataInsight Solutions is seeking an experienced Engineering Manager to lead our software development team in Calgary. The successful candidate will have a strong background in software engineering and DevOps, with expertise in Docker, Python, and Java. You will be responsible for overseeing the development and deployment of robust software solutions, ensuring high-quality deliverables, and fostering a culture of innovation and collaboration.",
+  "responsibilities": [
+    "Lead and manage a team of software engineers, providing guidance and mentorship to ensure successful project delivery.",
+    "Oversee the design, development, and deployment of scalable applications using Docker, Python, and Java.",
+    "Implement and improve DevOps practices to streamline software development and deployment processes.",
+    "Collaborate with cross-functional teams to define, design, and ship new features.",
+    "Ensure code quality and maintainability through code reviews and best practices.",
+    "Coordinate with stakeholders to gather and prioritize requirements, ensuring alignment with business objectives.",
+    "Drive the implementation of CI/CD pipelines to enhance application reliability and performance.",
+    "Facilitate technical discussions and problem-solving sessions to address complex engineering challenges.",
+    "Manage project timelines, deliverables, and resource allocation to meet company goals."
+  ],
+  "qualifications": [
+    "Bachelor's degree in Computer Science, Software Engineering, or a related field.",
+    "Proven experience as an Engineering Manager or in a similar leadership role.",
+    "Expertise in DevOps practices and tools, including Docker and continuous integration/continuous deployment (CI/CD).",
+    "Proficiency in Python and intermediate knowledge of Java.",
+    "Strong experience with version control systems, particularly Git.",
+    "Solid understanding of software development principles and methodologies.",
+    "Excellent communication and interpersonal skills with a knack for problem-solving.",
+    "Experience with Node.js and JavaScript is an asset.",
+    "Strong organizational skills and the ability to manage multiple projects simultaneously."
+  ],
+  "salary_range": "Competitive",
+  "skills": {
+    "primary": [
+      {
+        "skill_id": "devops",
+        "name": "DevOps",
+        "category": "domain",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.9363071780487084
+      },
+      {
+        "skill_id": "java",
+        "name": "Java",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.9608562476848055
+      },
+      {
+        "skill_id": "docker",
+        "name": "Docker",
+        "category": "tools",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.837322802247675
+      },
+      {
+        "skill_id": "git",
+        "name": "Git",
+        "category": "tools",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.9990708972346038
+      },
+      {
+        "skill_id": "python",
+        "name": "Python",
+        "category": "languages",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.8260806579583095
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "ci_cd",
+        "name": "CI/CD",
+        "category": "methodologies",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.4245724195415501
+      },
+      {
+        "skill_id": "nodejs",
+        "name": "Node.js",
+        "category": "frameworks",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.45638365561413646
+      },
+      {
+        "skill_id": "javascript",
+        "name": "JavaScript",
+        "category": "languages",
+        "proficiency": "advanced",
+        "is_primary": false,
+        "importance": 0.6209699655501726
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.4762026157328489
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.388009125964284
+      }
+    ]
+  },
+  "skill_relationships": [
+    {
+      "source": "devops",
+      "target": "ci_cd",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "devops",
+      "target": "java",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "devops",
+      "target": "docker",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "devops",
+      "target": "git",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "devops",
+      "target": "python",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "java",
+      "target": "docker",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "java",
+      "target": "git",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "java",
+      "target": "python",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "docker",
+      "target": "devops",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "docker",
+      "target": "ci_cd",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "docker",
+      "target": "git",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "docker",
+      "target": "python",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "git",
+      "target": "ci_cd",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "git",
+      "target": "python",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "ci_cd",
+      "target": "devops",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "ci_cd",
+      "target": "docker",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "ci_cd",
+      "target": "git",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "nodejs",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 1.0
+    }
+  ]
+}

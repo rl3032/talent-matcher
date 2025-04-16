@@ -1,0 +1,29 @@
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "phone": "+1-555-234-5678",
+  "location": "Toronto, Canada",
+  "title": "Data Scientist",
+  "summary": "Detail-oriented data scientist with experience in building scalable machine learning models...",
+  "skills": ["Python", "Pandas", "Scikit-learn", "SQL", "AWS"],
+  "experience": [
+    {
+      "job_title": "Data Scientist",
+      "company": "DataCorp",
+      "start_date": "2021-05",
+      "end_date": "2024-03",
+      "description": [
+        "Developed and deployed ML models for fraud detection.",
+        "Managed and optimized data pipelines for scalable data processing."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "MSc in Computer Science",
+      "institution": "University of British Columbia",
+      "graduation_year": 2020
+    }
+  ],
+  "certifications": ["AWS Certified Machine Learning – Specialty"]
+}

@@ -1,0 +1,232 @@
+{
+  "job_id": "job_7",
+  "title": "Engineering Manager",
+  "company": "Signal Digital",
+  "location": "London, ON",
+  "domain": "software_engineering",
+  "job_type": "Full-time",
+  "summary": "Signal Digital is seeking an experienced Engineering Manager to lead and drive our dynamic software engineering team. Based in London, ON, this role will oversee the development of cutting-edge digital solutions, ensuring high-quality delivery through effective leadership and technical expertise. The ideal candidate will have a strong background in frontend development with advanced skills in React and JavaScript, along with a solid understanding of Docker and Java.",
+  "responsibilities": [
+    "Lead and manage a team of software engineers, fostering an environment of collaboration and continuous improvement.",
+    "Oversee the design, development, and deployment of high-quality software solutions using React, JavaScript, and Java.",
+    "Utilize Docker to streamline development processes and improve deployment efficiency.",
+    "Collaborate with cross-functional teams to define, design, and deliver new features and enhancements.",
+    "Mentor and develop team members, providing technical guidance and career development support.",
+    "Implement best practices for software development, including code reviews and automated testing.",
+    "Coordinate with product management to align engineering activities with business goals.",
+    "Manage project timelines and deliverables, ensuring projects are completed on time and within scope."
+  ],
+  "qualifications": [
+    "Bachelor's degree in Computer Science, Software Engineering, or a related field.",
+    "Proven experience as an Engineering Manager or in a similar leadership role within software engineering.",
+    "Expert-level skills in frontend development, particularly with React and JavaScript.",
+    "Intermediate proficiency in Docker and Java.",
+    "Strong problem-solving skills with the ability to think creatively and strategically.",
+    "Excellent communication skills with a knack for teamwork and collaboration.",
+    "Familiarity with Python, backend development, and DevOps practices is a plus.",
+    "Demonstrated ability to manage multiple projects and prioritize tasks effectively."
+  ],
+  "salary_range": "Competitive",
+  "skills": {
+    "primary": [
+      {
+        "skill_id": "docker",
+        "name": "Docker",
+        "category": "tools",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.8907925417902121
+      },
+      {
+        "skill_id": "frontend_dev",
+        "name": "Frontend Development",
+        "category": "domain",
+        "proficiency": "expert",
+        "is_primary": true,
+        "importance": 0.9264191501003495
+      },
+      {
+        "skill_id": "react",
+        "name": "React",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.9836599238213013
+      },
+      {
+        "skill_id": "java",
+        "name": "Java",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "is_primary": true,
+        "importance": 0.8451055986973293
+      },
+      {
+        "skill_id": "javascript",
+        "name": "JavaScript",
+        "category": "languages",
+        "proficiency": "advanced",
+        "is_primary": true,
+        "importance": 0.851447086109494
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "python",
+        "name": "Python",
+        "category": "languages",
+        "proficiency": "beginner",
+        "is_primary": false,
+        "importance": 0.5820993873548735
+      },
+      {
+        "skill_id": "backend_dev",
+        "name": "Backend Development",
+        "category": "domain",
+        "proficiency": "beginner",
+        "is_primary": false,
+        "importance": 0.4691534266705123
+      },
+      {
+        "skill_id": "devops",
+        "name": "DevOps",
+        "category": "domain",
+        "proficiency": "beginner",
+        "is_primary": false,
+        "importance": 0.4758996302247199
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.3234187464255042
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "is_primary": false,
+        "importance": 0.47945321882223224
+      }
+    ]
+  },
+  "skill_relationships": [
+    {
+      "source": "docker",
+      "target": "devops",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "docker",
+      "target": "frontend_dev",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "docker",
+      "target": "react",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "docker",
+      "target": "java",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "docker",
+      "target": "javascript",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "frontend_dev",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_dev",
+      "target": "backend_dev",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_dev",
+      "target": "react",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "frontend_dev",
+      "target": "java",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "frontend_dev",
+      "target": "javascript",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "react",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "react",
+      "target": "frontend_dev",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "react",
+      "target": "java",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "react",
+      "target": "javascript",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "java",
+      "target": "backend_dev",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "java",
+      "target": "javascript",
+      "type": "job_related",
+      "weight": 0.7
+    },
+    {
+      "source": "javascript",
+      "target": "frontend_dev",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "python",
+      "target": "backend_dev",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_dev",
+      "target": "frontend_dev",
+      "type": "complementary_to",
+      "weight": 1.0
+    }
+  ]
+}

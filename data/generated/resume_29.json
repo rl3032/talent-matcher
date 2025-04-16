@@ -1,0 +1,188 @@
+{
+  "resume_id": "resume_29",
+  "name": "Olivia Singh",
+  "email": "oliviasingh@icloud.com",
+  "phone": "+1-604-781-1617",
+  "location": "Montreal, QC",
+  "title": "Full Stack Developer",
+  "summary": "Experienced Full Stack Developer with a strong foundation in both frontend and backend technologies, specializing in JavaScript and Node.js. Proven track record in leading DevOps initiatives and enhancing system performance in fast-paced environments. Adept at collaborating with cross-functional teams to deliver high-quality software solutions. Committed to continuous learning and staying current with industry trends.",
+  "experience": [
+    {
+      "job_title": "Full Stack Developer",
+      "company": "CodeByte Inc.",
+      "start_date": "2024-02",
+      "end_date": "Present",
+      "description": [
+        "Led DevOps initiatives resulting in improved performance",
+        "Utilized Docker for analysis",
+        "Led Frontend Development initiatives resulting in improved performance",
+        "Participated in code reviews and implemented best practices",
+        "Resolved complex technical issues and improved system performance"
+      ],
+      "skills_used": [
+        "DevOps",
+        "Docker",
+        "Frontend Development",
+        "Communication",
+        "Teamwork"
+      ]
+    },
+    {
+      "job_title": "Full Stack Developer",
+      "company": "Analytics Insight",
+      "start_date": "2022-03",
+      "end_date": "2024-01",
+      "description": [
+        "Led DevOps initiatives resulting in improved performance",
+        "Built and optimized solutions using Node.js",
+        "Developed and maintained applications using Python",
+        "Collaborated with cross-functional teams to deliver high-quality software products",
+        "Participated in code reviews and implemented best practices"
+      ],
+      "skills_used": [
+        "DevOps",
+        "Node.js",
+        "Python",
+        "Communication",
+        "Teamwork"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Information Technology",
+      "institution": "University of Alberta",
+      "graduation_year": 2017
+    }
+  ],
+  "certifications": [
+    "AWS Certified Solutions Architect \u2013 Associate",
+    "Certified Kubernetes Administrator (CKA)",
+    "Microsoft Certified: Azure Developer Associate"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "docker",
+        "name": "Docker",
+        "category": "tools",
+        "proficiency": "intermediate",
+        "experience_years": 2.6,
+        "is_core": true
+      },
+      {
+        "skill_id": "java",
+        "name": "Java",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 4.7,
+        "is_core": true
+      },
+      {
+        "skill_id": "javascript",
+        "name": "JavaScript",
+        "category": "languages",
+        "proficiency": "advanced",
+        "experience_years": 3.5,
+        "is_core": true
+      },
+      {
+        "skill_id": "frontend_dev",
+        "name": "Frontend Development",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 4.3,
+        "is_core": true
+      },
+      {
+        "skill_id": "devops",
+        "name": "DevOps",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 3.0,
+        "is_core": true
+      },
+      {
+        "skill_id": "nodejs",
+        "name": "Node.js",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "experience_years": 4.2,
+        "is_core": true
+      },
+      {
+        "skill_id": "python",
+        "name": "Python",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 3.4,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 2.4,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 3.6,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 3.7,
+        "is_core": false
+      }
+    ],
+    "domain": "software_engineering"
+  },
+  "skill_relationships": [
+    {
+      "source": "docker",
+      "target": "devops",
+      "type": "related_to",
+      "weight": 0.76
+    },
+    {
+      "source": "javascript",
+      "target": "frontend_dev",
+      "type": "related_to",
+      "weight": 0.85
+    },
+    {
+      "source": "frontend_dev",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 0.9299999999999999
+    },
+    {
+      "source": "nodejs",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 0.92
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.74
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.86
+    }
+  ]
+}

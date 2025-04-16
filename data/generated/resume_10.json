@@ -1,0 +1,230 @@
+{
+  "resume_id": "resume_10",
+  "name": "Ananya Kumar",
+  "email": "ananyakumar@yahoo.ca",
+  "phone": "+1-416-639-8902",
+  "location": "Montreal, QC",
+  "title": "Research Scientist",
+  "summary": "Junior Research Scientist with over 2 years of experience specializing in Deep Learning and data analysis. Skilled in leveraging TensorFlow and Pandas to build and optimize data-driven solutions. Proven track record of extracting valuable insights from large datasets and developing predictive models to support business decisions. Adept at collaborating in team environments and communicating complex concepts effectively.",
+  "experience": [
+    {
+      "job_title": "Research Scientist",
+      "company": "Nexus Software",
+      "start_date": "2024-04",
+      "end_date": "Present",
+      "description": [
+        "Led Deep Learning initiatives resulting in improved performance",
+        "Built and optimized solutions using TensorFlow",
+        "Built and optimized solutions using Pandas",
+        "Analyzed large datasets to extract valuable insights",
+        "Developed predictive models to support business decisions"
+      ],
+      "skills_used": [
+        "Deep Learning",
+        "TensorFlow",
+        "Pandas",
+        "Problem Solving",
+        "Communication"
+      ]
+    },
+    {
+      "job_title": "Research Scientist",
+      "company": "Maple Analytics",
+      "start_date": "2021-10",
+      "end_date": "2024-03",
+      "description": [
+        "Developed and maintained applications using R",
+        "Led Deep Learning initiatives resulting in improved performance",
+        "Built and optimized solutions using Pandas",
+        "Analyzed large datasets to extract valuable insights",
+        "Developed predictive models to support business decisions"
+      ],
+      "skills_used": [
+        "R",
+        "Deep Learning",
+        "Pandas",
+        "Data Analysis",
+        "Machine Learning"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Analytics",
+      "institution": "University of Toronto",
+      "graduation_year": 2011
+    }
+  ],
+  "certifications": [
+    "TensorFlow Developer Certificate",
+    "Certified Analytics Professional (CAP)",
+    "Data Science Professional Certificate"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 1.8,
+        "is_core": true
+      },
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "beginner",
+        "experience_years": 1.0,
+        "is_core": true
+      },
+      {
+        "skill_id": "pandas",
+        "name": "Pandas",
+        "category": "frameworks",
+        "proficiency": "beginner",
+        "experience_years": 1.5,
+        "is_core": true
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "beginner",
+        "experience_years": 0.6,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "beginner",
+        "experience_years": 0.8,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "beginner",
+        "experience_years": 0.9,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "beginner",
+        "experience_years": 1.0,
+        "is_core": false
+      }
+    ],
+    "domain": "data_science"
+  },
+  "skill_relationships": [
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.6799999999999999
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 0.6799999999999999
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.6
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.6
+    },
+    {
+      "source": "pandas",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.65
+    },
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.56
+    },
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "data_analysis",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "data_visualization",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "data_visualization",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.55
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.58
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.6
+    }
+  ]
+}

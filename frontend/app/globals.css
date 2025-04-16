@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add custom spacing fixes */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  word-spacing: normal;
+  letter-spacing: normal;
+}
+
+/* Fix navigation links spacing */
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Make sure inline elements have proper spacing */
+a + a {
+  margin-left: 0.5rem;
+}
+
+/* Ensure proper word spacing in headings */
+.word-spacing-fix {
+  word-spacing: 0.25rem;
+}

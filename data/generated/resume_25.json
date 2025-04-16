@@ -1,0 +1,298 @@
+{
+  "resume_id": "resume_25",
+  "name": "Liam Patel",
+  "email": "liampatel@gmail.com",
+  "phone": "+1-778-801-1478",
+  "location": "Calgary, AB",
+  "title": "Frontend Developer",
+  "summary": "Experienced Frontend Developer with over 5 years of expertise in software engineering, specializing in building and optimizing user-focused web applications. Proficient in modern frontend technologies such as React and Node.js, with a strong foundation in DevOps and CI/CD practices. Proven track record of leading development initiatives and collaborating with cross-functional teams to deliver high-quality software solutions. Adept in resolving complex technical issues to enhance system performance.",
+  "experience": [
+    {
+      "job_title": "Frontend Developer",
+      "company": "Nexus Software",
+      "start_date": "2023-11",
+      "end_date": "Present",
+      "description": [
+        "Led Frontend Development initiatives resulting in improved performance",
+        "Utilized Git for deployment",
+        "Built and optimized solutions using React",
+        "Collaborated with cross-functional teams to deliver high-quality software products",
+        "Resolved complex technical issues and improved system performance"
+      ],
+      "skills_used": [
+        "Frontend Development",
+        "Git",
+        "React",
+        "Backend Development",
+        "Java"
+      ]
+    },
+    {
+      "job_title": "Frontend Developer",
+      "company": "Neural Systems",
+      "start_date": "2022-03",
+      "end_date": "2023-10",
+      "description": [
+        "Built and optimized solutions using Node.js",
+        "Led DevOps initiatives resulting in improved performance",
+        "Utilized Git for analysis",
+        "Participated in code reviews and implemented best practices",
+        "Resolved complex technical issues and improved system performance"
+      ],
+      "skills_used": [
+        "Node.js",
+        "DevOps",
+        "Git",
+        "Teamwork",
+        "Backend Development"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Web Development",
+      "institution": "University of Alberta",
+      "graduation_year": 2013
+    }
+  ],
+  "certifications": [
+    "AWS Certified Developer \u2013 Associate",
+    "Certified Kubernetes Application Developer (CKAD)",
+    "React Certification by Meta"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "devops",
+        "name": "DevOps",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 4.4,
+        "is_core": true
+      },
+      {
+        "skill_id": "react",
+        "name": "React",
+        "category": "frameworks",
+        "proficiency": "intermediate",
+        "experience_years": 3.8,
+        "is_core": true
+      },
+      {
+        "skill_id": "ci_cd",
+        "name": "CI/CD",
+        "category": "methodologies",
+        "proficiency": "intermediate",
+        "experience_years": 3.4,
+        "is_core": true
+      },
+      {
+        "skill_id": "nodejs",
+        "name": "Node.js",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "experience_years": 3.6,
+        "is_core": true
+      },
+      {
+        "skill_id": "docker",
+        "name": "Docker",
+        "category": "tools",
+        "proficiency": "advanced",
+        "experience_years": 4.2,
+        "is_core": true
+      },
+      {
+        "skill_id": "frontend_dev",
+        "name": "Frontend Development",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 2.0,
+        "is_core": true
+      },
+      {
+        "skill_id": "git",
+        "name": "Git",
+        "category": "tools",
+        "proficiency": "advanced",
+        "experience_years": 3.9,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "python",
+        "name": "Python",
+        "category": "languages",
+        "proficiency": "beginner",
+        "experience_years": 1.8,
+        "is_core": false
+      },
+      {
+        "skill_id": "javascript",
+        "name": "JavaScript",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 1.9,
+        "is_core": false
+      },
+      {
+        "skill_id": "backend_dev",
+        "name": "Backend Development",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 1.3,
+        "is_core": false
+      },
+      {
+        "skill_id": "java",
+        "name": "Java",
+        "category": "languages",
+        "proficiency": "beginner",
+        "experience_years": 1.0,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 2.7,
+        "is_core": false
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 2.4,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 3.1,
+        "is_core": false
+      }
+    ],
+    "domain": "software_engineering"
+  },
+  "skill_relationships": [
+    {
+      "source": "devops",
+      "target": "ci_cd",
+      "type": "related_to",
+      "weight": 0.9400000000000001
+    },
+    {
+      "source": "react",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 0.88
+    },
+    {
+      "source": "react",
+      "target": "frontend_dev",
+      "type": "related_to",
+      "weight": 0.88
+    },
+    {
+      "source": "ci_cd",
+      "target": "devops",
+      "type": "related_to",
+      "weight": 0.84
+    },
+    {
+      "source": "ci_cd",
+      "target": "docker",
+      "type": "complementary_to",
+      "weight": 0.84
+    },
+    {
+      "source": "ci_cd",
+      "target": "git",
+      "type": "complementary_to",
+      "weight": 0.84
+    },
+    {
+      "source": "nodejs",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 0.86
+    },
+    {
+      "source": "nodejs",
+      "target": "backend_dev",
+      "type": "related_to",
+      "weight": 0.86
+    },
+    {
+      "source": "docker",
+      "target": "devops",
+      "type": "related_to",
+      "weight": 0.92
+    },
+    {
+      "source": "docker",
+      "target": "ci_cd",
+      "type": "complementary_to",
+      "weight": 0.92
+    },
+    {
+      "source": "frontend_dev",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 0.7
+    },
+    {
+      "source": "frontend_dev",
+      "target": "backend_dev",
+      "type": "complementary_to",
+      "weight": 0.7
+    },
+    {
+      "source": "git",
+      "target": "ci_cd",
+      "type": "complementary_to",
+      "weight": 0.89
+    },
+    {
+      "source": "python",
+      "target": "backend_dev",
+      "type": "related_to",
+      "weight": 0.6799999999999999
+    },
+    {
+      "source": "javascript",
+      "target": "frontend_dev",
+      "type": "related_to",
+      "weight": 0.69
+    },
+    {
+      "source": "backend_dev",
+      "target": "frontend_dev",
+      "type": "complementary_to",
+      "weight": 0.63
+    },
+    {
+      "source": "java",
+      "target": "backend_dev",
+      "type": "related_to",
+      "weight": 0.6
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.77
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.74
+    }
+  ]
+}

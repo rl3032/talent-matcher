@@ -1,0 +1,236 @@
+{
+  "resume_id": "resume_26",
+  "name": "Rohan Patel",
+  "email": "rohanpatel@outlook.com",
+  "phone": "+1-613-421-4348",
+  "location": "Calgary, AB",
+  "title": "Research Scientist",
+  "summary": "Experienced Research Scientist specializing in Data Science with a strong background in machine learning, data analysis, and data visualization. Proven track record of leading successful data-driven initiatives to enhance business performance. Adept at developing predictive models and delivering insights through advanced data visualization tools like Tableau. Committed to leveraging analytical skills and teamwork to drive innovation and strategic decision-making.",
+  "experience": [
+    {
+      "job_title": "Research Scientist",
+      "company": "Maple Analytics",
+      "start_date": "2023-07",
+      "end_date": "Present",
+      "description": [
+        "Led Data Analysis initiatives resulting in improved performance",
+        "Utilized Tableau for deployment",
+        "Led Machine Learning initiatives resulting in improved performance",
+        "Created data visualizations and presentations for stakeholders",
+        "Developed predictive models to support business decisions"
+      ],
+      "skills_used": [
+        "Data Analysis",
+        "Tableau",
+        "Machine Learning",
+        "Problem Solving",
+        "Teamwork"
+      ]
+    },
+    {
+      "job_title": "Research Scientist",
+      "company": "Northern Code",
+      "start_date": "2022-06",
+      "end_date": "2023-06",
+      "description": [
+        "Developed and maintained applications using R",
+        "Utilized Tableau for testing",
+        "Led Deep Learning initiatives resulting in improved performance",
+        "Created data visualizations and presentations for stakeholders",
+        "Developed predictive models to support business decisions"
+      ],
+      "skills_used": [
+        "R",
+        "Tableau",
+        "Deep Learning",
+        "Teamwork",
+        "Problem Solving"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Analytics",
+      "institution": "Queen's University",
+      "graduation_year": 2013
+    }
+  ],
+  "certifications": [
+    "Certified Data Scientist (CDS)",
+    "Tableau Desktop Specialist",
+    "Machine Learning Certification from Coursera"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 3.3,
+        "is_core": true
+      },
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 3.0,
+        "is_core": true
+      },
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "advanced",
+        "experience_years": 3.5,
+        "is_core": true
+      },
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 3.7,
+        "is_core": true
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 4.5,
+        "is_core": true
+      },
+      {
+        "skill_id": "tableau",
+        "name": "Tableau",
+        "category": "tools",
+        "proficiency": "advanced",
+        "experience_years": 2.2,
+        "is_core": true
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 3.8,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 2.6,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 3.8,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 3.0,
+        "is_core": false
+      }
+    ],
+    "domain": "data_science"
+  },
+  "skill_relationships": [
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.83
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.83
+    },
+    {
+      "source": "data_analysis",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 0.8
+    },
+    {
+      "source": "sql",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.85
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.87
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 0.87
+    },
+    {
+      "source": "data_visualization",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.95
+    },
+    {
+      "source": "data_visualization",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.95
+    },
+    {
+      "source": "tableau",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 0.72
+    },
+    {
+      "source": "tableau",
+      "target": "sql",
+      "type": "complementary_to",
+      "weight": 0.72
+    },
+    {
+      "source": "tableau",
+      "target": "data_analysis",
+      "type": "complementary_to",
+      "weight": 0.72
+    },
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.88
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.76
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.8
+    }
+  ]
+}

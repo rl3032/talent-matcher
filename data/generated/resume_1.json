@@ -1,0 +1,236 @@
+{
+  "resume_id": "resume_1",
+  "name": "Ananya Chen",
+  "email": "ananyachen@icloud.com",
+  "phone": "+1-780-677-3302",
+  "location": "Toronto, ON",
+  "title": "Data Scientist",
+  "summary": "Dedicated and results-driven Data Scientist with over 4 years of experience in delivering insightful data-driven solutions. Proven track record in leading machine learning initiatives and data visualization projects, contributing to improved business performance. Proficient in utilizing advanced tools such as R, Tableau, and SQL to analyze complex datasets and develop predictive models. Strong communicator with a collaborative approach to problem-solving.",
+  "experience": [
+    {
+      "job_title": "Data Scientist",
+      "company": "Neural Systems",
+      "start_date": "2023-06",
+      "end_date": "Present",
+      "description": [
+        "Led Data Visualization initiatives resulting in improved performance",
+        "Developed and maintained applications using R",
+        "Led Machine Learning initiatives resulting in improved performance",
+        "Developed predictive models to support business decisions",
+        "Analyzed large datasets to extract valuable insights"
+      ],
+      "skills_used": [
+        "Data Visualization",
+        "R",
+        "Machine Learning",
+        "Teamwork",
+        "Communication"
+      ]
+    },
+    {
+      "job_title": "Data Scientist",
+      "company": "Northern Code",
+      "start_date": "2021-06",
+      "end_date": "2023-05",
+      "description": [
+        "Led Machine Learning initiatives resulting in improved performance",
+        "Utilized Tableau for development",
+        "Developed and maintained applications using R",
+        "Developed predictive models to support business decisions",
+        "Created data visualizations and presentations for stakeholders"
+      ],
+      "skills_used": [
+        "Machine Learning",
+        "Tableau",
+        "R",
+        "Teamwork",
+        "Communication"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Machine Learning",
+      "institution": "University of Toronto",
+      "graduation_year": 2014
+    }
+  ],
+  "certifications": [
+    "Certified Data Scientist (CDS)",
+    "Tableau Desktop Specialist",
+    "Machine Learning Certificate from Coursera"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "tableau",
+        "name": "Tableau",
+        "category": "tools",
+        "proficiency": "advanced",
+        "experience_years": 4.0,
+        "is_core": true
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 2.4,
+        "is_core": true
+      },
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 2.1,
+        "is_core": true
+      },
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 3.5,
+        "is_core": true
+      },
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 3.3,
+        "is_core": true
+      },
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "advanced",
+        "experience_years": 3.4,
+        "is_core": true
+      },
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 2.7,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 3.2,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 4.9,
+        "is_core": false
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 3.2,
+        "is_core": false
+      }
+    ],
+    "domain": "data_science"
+  },
+  "skill_relationships": [
+    {
+      "source": "tableau",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 0.9
+    },
+    {
+      "source": "tableau",
+      "target": "sql",
+      "type": "complementary_to",
+      "weight": 0.9
+    },
+    {
+      "source": "tableau",
+      "target": "data_analysis",
+      "type": "complementary_to",
+      "weight": 0.9
+    },
+    {
+      "source": "data_visualization",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.74
+    },
+    {
+      "source": "data_visualization",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.74
+    },
+    {
+      "source": "sql",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.71
+    },
+    {
+      "source": "data_analysis",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 0.85
+    },
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.83
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.83
+    },
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.84
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.77
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 0.77
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.8200000000000001
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.8200000000000001
+    }
+  ]
+}

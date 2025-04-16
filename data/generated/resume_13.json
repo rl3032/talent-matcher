@@ -1,0 +1,240 @@
+{
+  "resume_id": "resume_13",
+  "name": "Rohan Zhang",
+  "email": "rohanzhang@outlook.com",
+  "phone": "+1-647-872-3135",
+  "location": "Edmonton, AB",
+  "title": "Backend Developer",
+  "summary": "Experienced Backend Developer with over 14 years of expertise in software engineering, specializing in Backend and Frontend Development. Proven track record in leading development initiatives, optimizing system performance, and delivering high-quality software solutions. Adept at utilizing modern technologies like Docker, Python, and JavaScript to solve complex technical challenges and drive business success.",
+  "experience": [
+    {
+      "job_title": "Backend Developer",
+      "company": "Northern Code",
+      "start_date": "2022-08",
+      "end_date": "Present",
+      "description": [
+        "Developed and maintained applications using Python",
+        "Led Backend Development initiatives resulting in improved performance",
+        "Developed and maintained applications using JavaScript",
+        "Participated in code reviews and implemented best practices",
+        "Resolved complex technical issues and improved system performance"
+      ],
+      "skills_used": [
+        "Python",
+        "Backend Development",
+        "JavaScript",
+        "Communication",
+        "Problem Solving"
+      ]
+    },
+    {
+      "job_title": "Backend Developer",
+      "company": "Nexus Software",
+      "start_date": "2021-01",
+      "end_date": "2022-07",
+      "description": [
+        "Led Backend Development initiatives resulting in improved performance",
+        "Utilized Docker for testing",
+        "Developed and maintained applications using JavaScript",
+        "Collaborated with cross-functional teams to deliver high-quality software products",
+        "Participated in code reviews and implemented best practices"
+      ],
+      "skills_used": [
+        "Backend Development",
+        "Docker",
+        "JavaScript",
+        "Teamwork",
+        "Problem Solving"
+      ]
+    },
+    {
+      "job_title": "Junior Backend Developer",
+      "company": "Quantum Software",
+      "start_date": "2019-06",
+      "end_date": "2020-11",
+      "description": [
+        "Utilized Docker for deployment",
+        "Led DevOps initiatives resulting in improved performance",
+        "Built and optimized solutions using Node.js",
+        "Participated in code reviews and implemented best practices",
+        "Collaborated with cross-functional teams to deliver high-quality software products"
+      ],
+      "skills_used": [
+        "Docker",
+        "DevOps",
+        "Node.js",
+        "Teamwork",
+        "Problem Solving"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Computer Science",
+      "institution": "University of Waterloo",
+      "graduation_year": 2012
+    }
+  ],
+  "certifications": [
+    "Certified Kubernetes Administrator (CKA)",
+    "AWS Certified Solutions Architect",
+    "Docker Certified Associate"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "git",
+        "name": "Git",
+        "category": "tools",
+        "proficiency": "expert",
+        "experience_years": 5.4,
+        "is_core": true
+      },
+      {
+        "skill_id": "devops",
+        "name": "DevOps",
+        "category": "domain",
+        "proficiency": "advanced",
+        "experience_years": 6.5,
+        "is_core": true
+      },
+      {
+        "skill_id": "frontend_dev",
+        "name": "Frontend Development",
+        "category": "domain",
+        "proficiency": "expert",
+        "experience_years": 12.0,
+        "is_core": true
+      },
+      {
+        "skill_id": "javascript",
+        "name": "JavaScript",
+        "category": "languages",
+        "proficiency": "advanced",
+        "experience_years": 12.1,
+        "is_core": true
+      },
+      {
+        "skill_id": "docker",
+        "name": "Docker",
+        "category": "tools",
+        "proficiency": "expert",
+        "experience_years": 14.9,
+        "is_core": true
+      },
+      {
+        "skill_id": "backend_dev",
+        "name": "Backend Development",
+        "category": "domain",
+        "proficiency": "expert",
+        "experience_years": 14.9,
+        "is_core": true
+      },
+      {
+        "skill_id": "nodejs",
+        "name": "Node.js",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "experience_years": 10.8,
+        "is_core": true
+      },
+      {
+        "skill_id": "python",
+        "name": "Python",
+        "category": "languages",
+        "proficiency": "expert",
+        "experience_years": 11.0,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "expert",
+        "experience_years": 12.3,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "expert",
+        "experience_years": 12.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 10.8,
+        "is_core": false
+      }
+    ],
+    "domain": "software_engineering"
+  },
+  "skill_relationships": [
+    {
+      "source": "frontend_dev",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "frontend_dev",
+      "target": "backend_dev",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "javascript",
+      "target": "frontend_dev",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "docker",
+      "target": "devops",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "backend_dev",
+      "target": "frontend_dev",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "nodejs",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 1.0
+    },
+    {
+      "source": "nodejs",
+      "target": "backend_dev",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "python",
+      "target": "backend_dev",
+      "type": "related_to",
+      "weight": 1.0
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 1.0
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 1.0
+    }
+  ]
+}

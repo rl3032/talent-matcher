@@ -1,0 +1,214 @@
+{
+  "resume_id": "resume_17",
+  "name": "Emma Taylor",
+  "email": "emmataylor@protonmail.com",
+  "phone": "+1-778-488-7112",
+  "location": "Montreal, QC",
+  "title": "Mobile Developer",
+  "summary": "Dynamic and detail-oriented Mobile Developer with over 3 years of experience in designing, developing, and maintaining mobile applications using React, Python, and Node.js. Proven track record of leveraging Docker for deployment and optimizing solutions for improved system performance. Adept at collaborating with cross-functional teams to deliver high-quality software products, with strong communication and problem-solving skills.",
+  "experience": [
+    {
+      "job_title": "Mobile Developer",
+      "company": "CloudScale Technologies",
+      "start_date": "2023-10",
+      "end_date": "Present",
+      "description": [
+        "Developed and maintained applications using Python",
+        "Utilized Docker for deployment",
+        "Built and optimized solutions using Node.js",
+        "Participated in code reviews and implemented best practices",
+        "Collaborated with cross-functional teams to deliver high-quality software products"
+      ],
+      "skills_used": [
+        "Python",
+        "Docker",
+        "Node.js",
+        "Teamwork",
+        "Frontend Development"
+      ]
+    },
+    {
+      "job_title": "Mobile Developer",
+      "company": "CodeByte Inc.",
+      "start_date": "2022-05",
+      "end_date": "2023-09",
+      "description": [
+        "Built and optimized solutions using React",
+        "Utilized Docker for analysis",
+        "Built and optimized solutions using Node.js",
+        "Collaborated with cross-functional teams to deliver high-quality software products",
+        "Resolved complex technical issues and improved system performance"
+      ],
+      "skills_used": [
+        "React",
+        "Docker",
+        "Node.js",
+        "CI/CD",
+        "Problem Solving"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Information Technology",
+      "institution": "University of Alberta",
+      "graduation_year": 2023
+    }
+  ],
+  "certifications": [
+    "Certified Kubernetes Application Developer (CKAD)",
+    "AWS Certified Developer \u2013 Associate",
+    "Certified React Developer"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "javascript",
+        "name": "JavaScript",
+        "category": "languages",
+        "proficiency": "advanced",
+        "experience_years": 2.6,
+        "is_core": true
+      },
+      {
+        "skill_id": "docker",
+        "name": "Docker",
+        "category": "tools",
+        "proficiency": "intermediate",
+        "experience_years": 3.2,
+        "is_core": true
+      },
+      {
+        "skill_id": "nodejs",
+        "name": "Node.js",
+        "category": "frameworks",
+        "proficiency": "intermediate",
+        "experience_years": 3.2,
+        "is_core": true
+      },
+      {
+        "skill_id": "react",
+        "name": "React",
+        "category": "frameworks",
+        "proficiency": "advanced",
+        "experience_years": 3.9,
+        "is_core": true
+      },
+      {
+        "skill_id": "python",
+        "name": "Python",
+        "category": "languages",
+        "proficiency": "advanced",
+        "experience_years": 3.2,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "frontend_dev",
+        "name": "Frontend Development",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 1.7,
+        "is_core": false
+      },
+      {
+        "skill_id": "java",
+        "name": "Java",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 1.9,
+        "is_core": false
+      },
+      {
+        "skill_id": "ci_cd",
+        "name": "CI/CD",
+        "category": "methodologies",
+        "proficiency": "beginner",
+        "experience_years": 1.6,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 3.3,
+        "is_core": false
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 4.3,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "advanced",
+        "experience_years": 4.0,
+        "is_core": false
+      }
+    ],
+    "domain": "software_engineering"
+  },
+  "skill_relationships": [
+    {
+      "source": "javascript",
+      "target": "frontend_dev",
+      "type": "related_to",
+      "weight": 0.76
+    },
+    {
+      "source": "docker",
+      "target": "ci_cd",
+      "type": "complementary_to",
+      "weight": 0.8200000000000001
+    },
+    {
+      "source": "nodejs",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 0.8200000000000001
+    },
+    {
+      "source": "react",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 0.89
+    },
+    {
+      "source": "react",
+      "target": "frontend_dev",
+      "type": "related_to",
+      "weight": 0.89
+    },
+    {
+      "source": "frontend_dev",
+      "target": "javascript",
+      "type": "requires",
+      "weight": 0.6699999999999999
+    },
+    {
+      "source": "ci_cd",
+      "target": "docker",
+      "type": "complementary_to",
+      "weight": 0.66
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.83
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.9299999999999999
+    }
+  ]
+}

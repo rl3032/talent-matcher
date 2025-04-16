@@ -1,0 +1,226 @@
+{
+  "resume_id": "resume_30",
+  "name": "Emma Singh",
+  "email": "emmasingh@yahoo.ca",
+  "phone": "+1-613-822-2928",
+  "location": "Victoria, BC",
+  "title": "Mobile Developer",
+  "summary": "Junior Mobile Developer with a background in Information Technology from McGill University, possessing over two years of experience in developing and maintaining mobile applications. Skilled in JavaScript and Docker, with a strong foundation in Git and CI/CD processes. Proven ability to collaborate with cross-functional teams and deliver high-quality software products.",
+  "experience": [
+    {
+      "job_title": "Mobile Developer",
+      "company": "Neural Systems",
+      "start_date": "2024-04",
+      "end_date": "Present",
+      "description": [
+        "Developed and maintained applications using JavaScript",
+        "Utilized Git for testing",
+        "Utilized Docker for testing",
+        "Participated in code reviews and implemented best practices",
+        "Collaborated with cross-functional teams to deliver high-quality software products"
+      ],
+      "skills_used": [
+        "JavaScript",
+        "Git",
+        "Docker",
+        "Communication",
+        "CI/CD"
+      ]
+    },
+    {
+      "job_title": "Mobile Developer",
+      "company": "Vector AI",
+      "start_date": "2021-04",
+      "end_date": "2024-03",
+      "description": [
+        "Utilized Docker for analysis",
+        "Developed and maintained applications using JavaScript",
+        "Utilized Git for testing",
+        "Resolved complex technical issues and improved system performance",
+        "Participated in code reviews and implemented best practices"
+      ],
+      "skills_used": [
+        "Docker",
+        "JavaScript",
+        "Git",
+        "Backend Development",
+        "Java"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Information Technology",
+      "institution": "McGill University",
+      "graduation_year": 2023
+    }
+  ],
+  "certifications": [
+    "Certified Kubernetes Application Developer (CKAD)",
+    "AWS Certified Cloud Practitioner",
+    "Google Associate Android Developer"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "git",
+        "name": "Git",
+        "category": "tools",
+        "proficiency": "beginner",
+        "experience_years": 1.3,
+        "is_core": true
+      },
+      {
+        "skill_id": "python",
+        "name": "Python",
+        "category": "languages",
+        "proficiency": "beginner",
+        "experience_years": 0.9,
+        "is_core": true
+      },
+      {
+        "skill_id": "javascript",
+        "name": "JavaScript",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 1.5,
+        "is_core": true
+      },
+      {
+        "skill_id": "docker",
+        "name": "Docker",
+        "category": "tools",
+        "proficiency": "intermediate",
+        "experience_years": 1.9,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "ci_cd",
+        "name": "CI/CD",
+        "category": "methodologies",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "java",
+        "name": "Java",
+        "category": "languages",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "devops",
+        "name": "DevOps",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "backend_dev",
+        "name": "Backend Development",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "beginner",
+        "experience_years": 1.4,
+        "is_core": false
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 1.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "beginner",
+        "experience_years": 0.7,
+        "is_core": false
+      }
+    ],
+    "domain": "software_engineering"
+  },
+  "skill_relationships": [
+    {
+      "source": "git",
+      "target": "ci_cd",
+      "type": "complementary_to",
+      "weight": 0.63
+    },
+    {
+      "source": "python",
+      "target": "backend_dev",
+      "type": "related_to",
+      "weight": 0.59
+    },
+    {
+      "source": "docker",
+      "target": "devops",
+      "type": "related_to",
+      "weight": 0.69
+    },
+    {
+      "source": "docker",
+      "target": "ci_cd",
+      "type": "complementary_to",
+      "weight": 0.69
+    },
+    {
+      "source": "ci_cd",
+      "target": "devops",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "ci_cd",
+      "target": "docker",
+      "type": "complementary_to",
+      "weight": 0.55
+    },
+    {
+      "source": "ci_cd",
+      "target": "git",
+      "type": "complementary_to",
+      "weight": 0.55
+    },
+    {
+      "source": "java",
+      "target": "backend_dev",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "devops",
+      "target": "ci_cd",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.65
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.57
+    }
+  ]
+}

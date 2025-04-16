@@ -1,0 +1,377 @@
+﻿[
+  {
+    "n": {
+      "identity": 48,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "business",
+        "name": "Teamwork",
+        "skill_id": "teamwork",
+        "category": "soft"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:48"
+    }
+  },
+  {
+    "n": {
+      "identity": 49,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "business",
+        "name": "Problem Solving",
+        "skill_id": "problem_solving",
+        "category": "soft"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:49"
+    }
+  },
+  {
+    "n": {
+      "identity": 194,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "Python",
+        "skill_id": "python",
+        "category": "languages"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:194"
+    }
+  },
+  {
+    "n": {
+      "identity": 195,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "JavaScript",
+        "skill_id": "javascript",
+        "category": "languages"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:195"
+    }
+  },
+  {
+    "n": {
+      "identity": 196,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "Java",
+        "skill_id": "java",
+        "category": "languages"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:196"
+    }
+  },
+  {
+    "n": {
+      "identity": 197,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "React",
+        "skill_id": "react",
+        "category": "frameworks"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:197"
+    }
+  },
+  {
+    "n": {
+      "identity": 198,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "Node.js",
+        "skill_id": "nodejs",
+        "category": "frameworks"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:198"
+    }
+  },
+  {
+    "n": {
+      "identity": 199,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "Docker",
+        "skill_id": "docker",
+        "category": "tools"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:199"
+    }
+  },
+  {
+    "n": {
+      "identity": 200,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "CI/CD",
+        "skill_id": "ci_cd",
+        "category": "methodologies"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:200"
+    }
+  },
+  {
+    "n": {
+      "identity": 201,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "Git",
+        "skill_id": "git",
+        "category": "tools"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:201"
+    }
+  },
+  {
+    "n": {
+      "identity": 202,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "Frontend Development",
+        "skill_id": "frontend_dev",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:202"
+    }
+  },
+  {
+    "n": {
+      "identity": 203,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "Backend Development",
+        "skill_id": "backend_dev",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:203"
+    }
+  },
+  {
+    "n": {
+      "identity": 204,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "software_engineering",
+        "name": "DevOps",
+        "skill_id": "devops",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:204"
+    }
+  },
+  {
+    "n": {
+      "identity": 205,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "data_science",
+        "name": "Data Analysis",
+        "skill_id": "data_analysis",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:205"
+    }
+  },
+  {
+    "n": {
+      "identity": 206,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "data_science",
+        "name": "Machine Learning",
+        "skill_id": "machine_learning",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:206"
+    }
+  },
+  {
+    "n": {
+      "identity": 207,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "data_science",
+        "name": "Deep Learning",
+        "skill_id": "deep_learning",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:207"
+    }
+  },
+  {
+    "n": {
+      "identity": 208,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "data_science",
+        "name": "Data Visualization",
+        "skill_id": "data_visualization",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:208"
+    }
+  },
+  {
+    "n": {
+      "identity": 209,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "data_science",
+        "name": "SQL",
+        "skill_id": "sql",
+        "category": "languages"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:209"
+    }
+  },
+  {
+    "n": {
+      "identity": 210,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "data_science",
+        "name": "R",
+        "skill_id": "r",
+        "category": "languages"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:210"
+    }
+  },
+  {
+    "n": {
+      "identity": 211,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "data_science",
+        "name": "Pandas",
+        "skill_id": "pandas",
+        "category": "frameworks"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:211"
+    }
+  },
+  {
+    "n": {
+      "identity": 212,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "data_science",
+        "name": "TensorFlow",
+        "skill_id": "tensorflow",
+        "category": "frameworks"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:212"
+    }
+  },
+  {
+    "n": {
+      "identity": 213,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "data_science",
+        "name": "Tableau",
+        "skill_id": "tableau",
+        "category": "tools"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:213"
+    }
+  },
+  {
+    "n": {
+      "identity": 214,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "design",
+        "name": "UI Design",
+        "skill_id": "ui_design",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:214"
+    }
+  },
+  {
+    "n": {
+      "identity": 215,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "design",
+        "name": "UX Design",
+        "skill_id": "ux_design",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:215"
+    }
+  },
+  {
+    "n": {
+      "identity": 247,
+      "labels": [
+        "Skill"
+      ],
+      "properties": {
+        "domain": "design",
+        "name": "Graphic Design",
+        "skill_id": "graphic_design",
+        "category": "domain"
+      },
+      "elementId": "4:8f9dc2ca-4f5f-4d37-90ff-e0078e999f7e:247"
+    }
+  }
+]

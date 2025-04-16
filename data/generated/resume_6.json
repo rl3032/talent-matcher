@@ -1,0 +1,270 @@
+{
+  "resume_id": "resume_6",
+  "name": "Liam Chen",
+  "email": "liamchen@protonmail.com",
+  "phone": "+1-587-548-9661",
+  "location": "Edmonton, AB",
+  "title": "Machine Learning Engineer",
+  "summary": "Junior Machine Learning Engineer with a strong foundation in data science and a proven ability to apply machine learning techniques to solve business problems. Experienced in utilizing R, SQL, and data visualization tools to analyze large datasets and extract meaningful insights. Passionate about leveraging machine learning to drive innovation and enhance decision-making processes.",
+  "experience": [
+    {
+      "job_title": "Machine Learning Engineer",
+      "company": "Quantum Software",
+      "start_date": "2024-04",
+      "end_date": "Present",
+      "description": [
+        "Led Machine Learning initiatives resulting in improved performance",
+        "Developed and maintained applications using R",
+        "Developed and maintained applications using SQL",
+        "Analyzed large datasets to extract valuable insights",
+        "Created data visualizations and presentations for stakeholders"
+      ],
+      "skills_used": [
+        "Machine Learning",
+        "R",
+        "SQL",
+        "Deep Learning",
+        "Pandas"
+      ]
+    },
+    {
+      "job_title": "Machine Learning Engineer",
+      "company": "CodeByte Inc.",
+      "start_date": "2021-09",
+      "end_date": "2024-03",
+      "description": [
+        "Led Data Analysis initiatives resulting in improved performance",
+        "Led Machine Learning initiatives resulting in improved performance",
+        "Developed and maintained applications using R",
+        "Created data visualizations and presentations for stakeholders",
+        "Developed predictive models to support business decisions"
+      ],
+      "skills_used": [
+        "Data Analysis",
+        "Machine Learning",
+        "R",
+        "Problem Solving",
+        "Communication"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Data Science",
+      "institution": "University of Montreal",
+      "graduation_year": 2022
+    }
+  ],
+  "certifications": [
+    "Google Professional Machine Learning Engineer",
+    "IBM Data Science Professional Certificate",
+    "TensorFlow Developer Certificate"
+  ],
+  "skills": {
+    "core": [
+      {
+        "skill_id": "r",
+        "name": "R",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 0.8,
+        "is_core": true
+      },
+      {
+        "skill_id": "machine_learning",
+        "name": "Machine Learning",
+        "category": "domain",
+        "proficiency": "intermediate",
+        "experience_years": 0.7,
+        "is_core": true
+      },
+      {
+        "skill_id": "data_visualization",
+        "name": "Data Visualization",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 1.0,
+        "is_core": true
+      },
+      {
+        "skill_id": "data_analysis",
+        "name": "Data Analysis",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.6,
+        "is_core": true
+      },
+      {
+        "skill_id": "sql",
+        "name": "SQL",
+        "category": "languages",
+        "proficiency": "intermediate",
+        "experience_years": 1.5,
+        "is_core": true
+      }
+    ],
+    "secondary": [
+      {
+        "skill_id": "pandas",
+        "name": "Pandas",
+        "category": "frameworks",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "tensorflow",
+        "name": "TensorFlow",
+        "category": "frameworks",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "deep_learning",
+        "name": "Deep Learning",
+        "category": "domain",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "tableau",
+        "name": "Tableau",
+        "category": "tools",
+        "proficiency": "beginner",
+        "experience_years": 0.5,
+        "is_core": false
+      },
+      {
+        "skill_id": "communication",
+        "name": "Communication",
+        "category": "soft",
+        "proficiency": "beginner",
+        "experience_years": 1.8,
+        "is_core": false
+      },
+      {
+        "skill_id": "problem_solving",
+        "name": "Problem Solving",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 1.7,
+        "is_core": false
+      },
+      {
+        "skill_id": "teamwork",
+        "name": "Teamwork",
+        "category": "soft",
+        "proficiency": "intermediate",
+        "experience_years": 2.0,
+        "is_core": false
+      }
+    ],
+    "domain": "data_science"
+  },
+  "skill_relationships": [
+    {
+      "source": "r",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.58
+    },
+    {
+      "source": "machine_learning",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.57
+    },
+    {
+      "source": "machine_learning",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.57
+    },
+    {
+      "source": "data_visualization",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.6
+    },
+    {
+      "source": "data_visualization",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.6
+    },
+    {
+      "source": "data_analysis",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 0.56
+    },
+    {
+      "source": "sql",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.65
+    },
+    {
+      "source": "pandas",
+      "target": "data_analysis",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "tensorflow",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.55
+    },
+    {
+      "source": "tensorflow",
+      "target": "deep_learning",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "requires",
+      "weight": 0.55
+    },
+    {
+      "source": "deep_learning",
+      "target": "machine_learning",
+      "type": "subset_of",
+      "weight": 0.55
+    },
+    {
+      "source": "tableau",
+      "target": "data_visualization",
+      "type": "related_to",
+      "weight": 0.55
+    },
+    {
+      "source": "tableau",
+      "target": "sql",
+      "type": "complementary_to",
+      "weight": 0.55
+    },
+    {
+      "source": "tableau",
+      "target": "data_analysis",
+      "type": "complementary_to",
+      "weight": 0.55
+    },
+    {
+      "source": "communication",
+      "target": "teamwork",
+      "type": "complementary_to",
+      "weight": 0.6799999999999999
+    },
+    {
+      "source": "teamwork",
+      "target": "communication",
+      "type": "complementary_to",
+      "weight": 0.7
+    }
+  ]
+}
