@@ -7,6 +7,7 @@ import Link from "next/link";
 import { apiClient } from "../../../lib/api";
 import { CandidateWithSkills, MatchResult } from "../../../types";
 import SkillTag from "../../../components/SkillTag";
+import { useAuth } from "../../../lib/AuthContext";
 
 interface ExperienceItem {
   company: string;
@@ -36,10 +37,12 @@ type Props = {
 
 export default function CandidateDetailPage({ params }: Props) {
   const { resume_id } = params;
+  const { user } = useAuth();
   const [candidate, setCandidate] = useState<CandidateWithSkills | null>(null);
   const [matchingJobs, setMatchingJobs] = useState<MatchResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   // Format a value for display (convert snake_case to Title Case)
   const formatForDisplay = (value: string): string => {
@@ -71,9 +74,22 @@ export default function CandidateDetailPage({ params }: Props) {
         setMatchingJobs(jobsData);
 
         setError(null);
-      } catch (err) {
+        setUnauthorized(false);
+      } catch (err: any) {
         console.error("Error fetching candidate details:", err);
-        setError("Failed to load candidate details. Please try again later.");
+        // Check if this is an authorization error
+        if (
+          err.message === "Failed to fetch candidate details" &&
+          (!user ||
+            (user.role === "candidate" && user.profile_id !== resume_id))
+        ) {
+          setUnauthorized(true);
+          setError(
+            "You do not have permission to view this candidate's profile"
+          );
+        } else {
+          setError("Failed to load candidate details. Please try again later.");
+        }
       } finally {
         setLoading(false);
       }
@@ -82,7 +98,7 @@ export default function CandidateDetailPage({ params }: Props) {
     if (resume_id) {
       fetchCandidateDetails();
     }
-  }, [resume_id]);
+  }, [resume_id, user]);
 
   return (
     <Layout>
@@ -105,6 +121,28 @@ export default function CandidateDetailPage({ params }: Props) {
           ) : error ? (
             <div className="text-center py-10">
               <p className="text-red-500">{error}</p>
+              {unauthorized && (
+                <div className="mt-4">
+                  <p className="text-gray-700">
+                    {!user ? (
+                      <>
+                        You need to be logged in to view candidate profiles.{" "}
+                        <Link
+                          href="/auth/login"
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          Log in
+                        </Link>{" "}
+                        to continue.
+                      </>
+                    ) : user.role === "candidate" ? (
+                      "As a job seeker, you can only view your own profile."
+                    ) : (
+                      "Please try again or contact support if you think this is an error."
+                    )}
+                  </p>
+                </div>
+              )}
             </div>
           ) : candidate ? (
             <div className="space-y-6">

@@ -38,6 +38,25 @@ class KnowledgeGraph:
             session.run("CREATE CONSTRAINT IF NOT EXISTS FOR (s:Skill) REQUIRE s.skill_id IS UNIQUE")
             session.run("CREATE CONSTRAINT IF NOT EXISTS FOR (j:Job) REQUIRE j.job_id IS UNIQUE")
             session.run("CREATE CONSTRAINT IF NOT EXISTS FOR (c:Candidate) REQUIRE c.resume_id IS UNIQUE")
+            session.run("CREATE CONSTRAINT IF NOT EXISTS FOR (u:User) REQUIRE u.email IS UNIQUE")
+            
+    def ensure_user_schema(self):
+        """Make sure the User schema exists in the database."""
+        with self.driver.session() as session:
+            # Check if User label already exists by looking for any User nodes
+            result = session.run("MATCH (u:User) RETURN COUNT(u) AS count")
+            record = result.single()
+            
+            # If no User nodes exist, it's likely the schema has not been created
+            if record["count"] == 0:
+                print("Initializing User schema in the database")
+                # Create an index on email for faster lookups
+                session.run("CREATE INDEX IF NOT EXISTS FOR (u:User) ON (u.email)")
+                # Add timestamps index
+                session.run("CREATE INDEX IF NOT EXISTS FOR (u:User) ON (u.created_at)")
+                print("User schema initialized successfully")
+            else:
+                print(f"User schema already present with {record['count']} users")
             
     def add_skill(self, skill_data):
         """Add a skill node to the graph."""

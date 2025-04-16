@@ -575,34 +575,160 @@ def load_directory(kg, directory_path):
             load_single_resume(kg, json.load(open(file_path)))
             
 def initialize_knowledge_graph(data_dir=None):
-    """Initialize the knowledge graph and load all data."""
-    from src.knowledge_graph.model import KnowledgeGraph
+    """Initialize or connect to the knowledge graph.
+    
+    Args:
+        data_dir: Optional path to data directory.
+        
+    Returns:
+        The initialized KnowledgeGraph instance.
+    """
+    # Initialize knowledge graph
     kg = KnowledgeGraph()
     kg.connect()
+    
+    # Create constraints for unique IDs
     kg.create_constraints()
     
-    # Use the configured data directory if none provided
-    data_dir = data_dir or DATA_DIR
+    # Initialize User schema for authentication and user management
+    kg.ensure_user_schema()
     
-    # Load skills taxonomy
-    load_skills(kg)
+    # Check if the graph is empty
+    with kg.driver.session() as session:
+        result = session.run("MATCH (n) RETURN count(n) AS count")
+        count = result.single()["count"]
+        
+    # If the graph is empty, load the data
+    if count == 0:
+        print("Knowledge graph is empty, loading data...")
+        pipeline = ETLPipeline(kg, data_dir or DATA_DIR)
+        pipeline.run_pipeline(clear_db=False)
+        
+        # Make sure User schema is created
+        kg.ensure_user_schema()
+        
+        # After loading initial data, create test accounts
+        create_test_accounts(kg)
+    else:
+        print(f"Knowledge graph already contains {count} nodes")
+        
+    return kg
+
+def create_test_accounts(kg):
+    """Create test admin, HR, and candidate accounts and link them to test data."""
+    from werkzeug.security import generate_password_hash
     
-    # Load main job dataset
-    job_file = os.path.join(data_dir, "job_dataset.json")
-    if os.path.exists(job_file):
-        load_jobs(kg, job_file)
+    # Import here to prevent circular imports
+    import sys
+    import os
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    
+    # Create User schema directly with Cypher instead of relying on the User class
+    with kg.driver.session() as session:
+        # Create unique constraint for User.email
+        try:
+            session.run("CREATE CONSTRAINT unique_user_email IF NOT EXISTS FOR (u:User) REQUIRE u.email IS UNIQUE")
+        except Exception as e:
+            print(f"Warning: Could not create constraint: {str(e)}")
+    
+    # Now import the User class
+    try:
+        from src.api.app import User
+    except ImportError:
+        try:
+            from api.app import User
+        except ImportError:
+            print("Warning: Could not import User class, creating users directly with Cypher")
+            User = None
+    
+    print("Creating test accounts...")
+    
+    # Create admin HR account
+    hr_email = "hr@example.com"
+    hr_password = generate_password_hash("password123")
+    hr_name = "Test HR Manager"
+    
+    # Create HR user directly with Cypher if User class is not available
+    if User is None:
+        with kg.driver.session() as session:
+            session.run("""
+                MERGE (u:User {email: $email})
+                SET u.password_hash = $password_hash,
+                    u.name = $name,
+                    u.role = 'hiring_manager',
+                    u.created_at = datetime()
+            """, {"email": hr_email, "password_hash": hr_password, "name": hr_name})
+            print(f"Created HR account directly: {hr_email}")
+    else:
+        # Check if user already exists
+        hr_user = User.find_by_email(hr_email)
+        if not hr_user:
+            hr_user = User.create(hr_email, hr_password, hr_name, "hiring_manager")
+            print(f"Created HR account: {hr_email}")
+    
+    # Make the HR account an admin
+    with kg.driver.session() as session:
+        session.run("""
+            MATCH (u:User {email: $email})
+            SET u.role = 'admin'
+        """, {"email": hr_email})
+        print(f"Promoted {hr_email} to admin")
         
-    # Load main resume dataset
-    resume_file = os.path.join(data_dir, "resume_dataset.json")
-    if os.path.exists(resume_file):
-        load_resumes(kg, resume_file)
+        # Link all existing jobs to the HR account
+        job_count = session.run("""
+            MATCH (j:Job)
+            SET j.owner_email = $email
+            WITH j
+            MATCH (u:User {email: $email})
+            MERGE (u)-[:CREATED]->(j)
+            RETURN count(j) as count
+        """, {"email": hr_email}).single()["count"]
         
-    # Load individual files from generated directory
-    generated_dir = os.path.join(data_dir, "generated")
-    if os.path.exists(generated_dir):
-        load_directory(kg, generated_dir)
+        print(f"Assigned {job_count} jobs to {hr_email}")
+    
+    # Create test candidate accounts (up to 30)
+    with kg.driver.session() as session:
+        # Get all candidate profiles
+        candidates = session.run("""
+            MATCH (c:Candidate)
+            RETURN c.resume_id as resume_id, c.name as name, c.email as email
+            LIMIT 30
+        """).values()
         
-    return kg 
+        # Create candidate accounts and link them to profiles
+        for resume_id, name, candidate_email in candidates:
+            # Generate an email if not present
+            email = candidate_email or f"candidate_{resume_id}@example.com"
+            password = generate_password_hash("password123")
+            
+            if User is None:
+                # Create directly with Cypher
+                session.run("""
+                    MERGE (u:User {email: $email})
+                    SET u.password_hash = $password_hash,
+                        u.name = $name,
+                        u.role = 'candidate',
+                        u.profile_id = $profile_id,
+                        u.created_at = datetime()
+                """, {
+                    "email": email, 
+                    "password_hash": password, 
+                    "name": name,
+                    "profile_id": resume_id
+                })
+                print(f"Created candidate account directly: {email} linked to {resume_id}")
+            else:
+                # Use the User class
+                candidate_user = User.find_by_email(email)
+                if not candidate_user:
+                    candidate_user = User.create(email, password, name, "candidate", resume_id)
+                    print(f"Created candidate account: {email} linked to {resume_id}")
+                else:
+                    # Make sure profile_id is set
+                    candidate_user.update_profile_id(resume_id)
+                    print(f"Updated candidate account: {email} linked to {resume_id}")
+    
+    print("Test accounts created successfully")
 
 def clear_database(force=False):
     """Clear all data from the Neo4j database."""
@@ -660,10 +786,18 @@ def main():
     parser.add_argument('--data-dir', type=str, help='Custom data directory path')
     parser.add_argument('--clear-only', action='store_true', help='Only clear the database without loading data')
     parser.add_argument('--generate-embeddings', action='store_true', help='Generate text embeddings for enhanced matching')
+    parser.add_argument('--create-accounts-only', action='store_true', help='Only create test accounts without reloading data')
     args = parser.parse_args()
     
     if args.clear_only:
         clear_database(args.force)
+    elif args.create_accounts_only:
+        # Only create test accounts
+        from src.knowledge_graph.model import KnowledgeGraph
+        kg = KnowledgeGraph()
+        kg.connect()
+        create_test_accounts(kg)
+        kg.close()
     else:
         # Use the ETLPipeline instead of the legacy functions
         from src.knowledge_graph.model import KnowledgeGraph
@@ -683,6 +817,12 @@ def main():
             force=args.force,
             generate_embeddings=args.generate_embeddings
         )
+        
+        # Create test accounts regardless of pipeline success
+        try:
+            create_test_accounts(kg)
+        except Exception as e:
+            print(f"Warning: Could not create test accounts: {str(e)}")
         
         print("Database reload " + ("successful" if success else "failed"))
         kg.close()

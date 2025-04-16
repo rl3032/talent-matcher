@@ -8,8 +8,10 @@ import Layout from "../../../components/Layout";
 import SkillTag, { ProficiencyLevel } from "../../../components/SkillTag";
 import CandidateCard from "../../../components/CandidateCard";
 import Link from "next/link";
+import { useAuth } from "../../../lib/AuthContext";
 
 export default function JobDetailPage() {
+  const { user } = useAuth();
   const { job_id } = useParams<{ job_id: string }>();
   const [job, setJob] = useState<JobWithSkills | null>(null);
   const [matchingCandidates, setMatchingCandidates] = useState<MatchResult[]>(
@@ -17,6 +19,8 @@ export default function JobDetailPage() {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [canViewCandidates, setCanViewCandidates] = useState(false);
+  const [candidateError, setCandidateError] = useState<string | null>(null);
 
   // Format a value for display (convert snake_case to Title Case)
   const formatForDisplay = (value: string): string => {
@@ -35,17 +39,41 @@ export default function JobDetailPage() {
         const jobData = await apiClient.getJob(job_id as string);
         setJob(jobData);
 
-        // Fetch matching candidates using enhanced matching
-        const candidatesData = await apiClient.getJobMatchesEnhanced(
-          job_id as string,
-          {
-            limit: 10,
-            skillsWeight: 0.75,
-            locationWeight: 0.15,
-            semanticWeight: 0.1,
+        // Check if the current user is a hiring manager or admin
+        if (user && (user.role === "hiring_manager" || user.role === "admin")) {
+          // If the job has an owner_email property and it matches the current user's email,
+          // or if this is the first time the job is being viewed (no owner_email yet)
+          // or if the user is an admin
+          if (
+            !jobData.owner_email ||
+            jobData.owner_email === user.email ||
+            user.role === "admin"
+          ) {
+            setCanViewCandidates(true);
+
+            try {
+              // Only fetch candidates if user has permission
+              const candidatesData = await apiClient.getJobMatchesEnhanced(
+                job_id as string,
+                {
+                  limit: 10,
+                  skillsWeight: 0.75,
+                  locationWeight: 0.15,
+                  semanticWeight: 0.1,
+                }
+              );
+              setMatchingCandidates(candidatesData);
+            } catch (candidateErr) {
+              console.error(
+                "Error fetching matching candidates:",
+                candidateErr
+              );
+              setCandidateError(
+                "Failed to load matching candidates. You might not have permission to view them."
+              );
+            }
           }
-        );
-        setMatchingCandidates(candidatesData);
+        }
 
         setError(null);
       } catch (err) {
@@ -59,7 +87,7 @@ export default function JobDetailPage() {
     if (job_id) {
       fetchJobDetails();
     }
-  }, [job_id]);
+  }, [job_id, user]);
 
   if (loading) {
     return (
@@ -268,41 +296,47 @@ export default function JobDetailPage() {
           </div>
         </div>
 
-        {/* Matching candidates section */}
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:px-6">
-            <h2 className="text-xl font-bold text-gray-900">
-              Matching Candidates
-            </h2>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              Candidates who match the requirements for this job
-            </p>
-          </div>
-          <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-            {matchingCandidates.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {matchingCandidates.map((candidate) => (
-                  <CandidateCard
-                    key={candidate.resume_id}
-                    candidate={{
-                      resume_id: candidate.resume_id || "",
-                      name: candidate.name || "",
-                      title: candidate.title || "",
-                      location: "",
-                      domain: "",
-                    }}
-                    matchPercentage={candidate.match_percentage}
-                    skills={candidate.matching_skills}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500">
-                No matching candidates found for this job.
+        {/* Matching candidates section - only shown for job owners and admins */}
+        {user &&
+        (user.role === "hiring_manager" || user.role === "admin") &&
+        canViewCandidates ? (
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div className="px-4 py-5 sm:px-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                Matching Candidates
+              </h2>
+              <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                Candidates who match the requirements for this job
               </p>
-            )}
+            </div>
+            <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
+              {candidateError ? (
+                <p className="text-red-500">{candidateError}</p>
+              ) : matchingCandidates.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {matchingCandidates.map((candidate) => (
+                    <CandidateCard
+                      key={candidate.resume_id}
+                      candidate={{
+                        resume_id: candidate.resume_id || "",
+                        name: candidate.name || "",
+                        title: candidate.title || "",
+                        location: "",
+                        domain: "",
+                      }}
+                      matchPercentage={candidate.match_percentage}
+                      skills={candidate.matching_skills}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500">
+                  No matching candidates found for this job.
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </Layout>
   );

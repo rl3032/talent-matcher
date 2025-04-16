@@ -11,6 +11,7 @@ export interface Job {
   job_type?: string;
   employment_type?: string;
   industry?: string;
+  owner_email?: string;
 }
 
 export interface JobWithSkills extends Job {

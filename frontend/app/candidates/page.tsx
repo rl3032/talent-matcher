@@ -5,11 +5,17 @@ import { apiClient } from "../../lib/api";
 import { Candidate } from "../../types";
 import CandidateCard from "../../components/CandidateCard";
 import Layout from "../../components/Layout";
+import { useAuth } from "../../lib/AuthContext";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CandidatesPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [unauthorized, setUnauthorized] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<{
     locations: string[];
@@ -21,11 +27,35 @@ export default function CandidatesPage() {
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [selectedTitle, setSelectedTitle] = useState<string>("");
 
+  // Check if user has permission to access this page
+  useEffect(() => {
+    if (user && user.role !== "hiring_manager" && user.role !== "admin") {
+      // Immediately redirect to home page for job seekers
+      router.push("/");
+    } else if (!user) {
+      // Redirect non-authenticated users to login page
+      router.push("/auth/login");
+    }
+  }, [user, router]);
+
   useEffect(() => {
     const fetchCandidates = async () => {
+      // Don't fetch if no user or unauthorized role
+      if (!user || (user.role !== "hiring_manager" && user.role !== "admin")) {
+        return;
+      }
+
       try {
         setLoading(true);
         const response = await apiClient.getAllCandidates();
+
+        // Check for error message in response
+        if (response.error) {
+          setError(response.error);
+          setUnauthorized(true);
+          return;
+        }
+
         setCandidates(response.candidates || []);
         setFilters({
           locations: response.filters?.locations || [],
@@ -35,13 +65,20 @@ export default function CandidatesPage() {
       } catch (err) {
         console.error("Error fetching candidates:", err);
         setError("Failed to load candidates. Please try again later.");
+        // Check if it's likely an authorization error
+        if (
+          !user ||
+          (user.role !== "hiring_manager" && user.role !== "admin")
+        ) {
+          setUnauthorized(true);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchCandidates();
-  }, []);
+  }, [user]);
 
   // Format a value for display (convert snake_case to Title Case)
   const formatForDisplay = (value: string): string => {
@@ -75,6 +112,31 @@ export default function CandidatesPage() {
 
     return matchesSearch && matchesLocation && matchesTitle;
   });
+
+  // If unauthorized, show error message
+  if (unauthorized) {
+    return (
+      <Layout>
+        <div className="text-center py-10">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Unauthorized Access
+          </h1>
+          <p className="text-red-500 mb-4">
+            {error || "You don't have permission to view the candidate list"}
+          </p>
+          <p className="text-gray-700 mb-6">
+            This page is only accessible to hiring managers and administrators.
+          </p>
+          <Link
+            href="/"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Return to Home
+          </Link>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

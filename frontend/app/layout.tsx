@@ -1,9 +1,7 @@
-import "./globals.css";
+"use client";
 
-export const metadata = {
-  title: "Talent Matcher",
-  description: "Find perfect matches between candidates and jobs",
-};
+import "./globals.css";
+import { AuthProvider } from "../lib/AuthContext";
 
 export default function RootLayout({
   children,
@@ -12,7 +10,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <head>
+        <title>Talent Matcher</title>
+        <meta
+          name="description"
+          content="Find perfect matches between candidates and jobs"
+        />
+      </head>
+      <body className="antialiased">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

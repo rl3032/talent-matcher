@@ -67,7 +67,15 @@ export const apiClient = {
       url.searchParams.append("location_weight", locationWeight.toString());
       url.searchParams.append("semantic_weight", semanticWeight.toString());
 
-      const response = await fetch(url.toString());
+      // Get token from localStorage
+      const token = localStorage.getItem("accessToken");
+
+      const response = await fetch(url.toString(), {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+
       if (!response.ok)
         throw new Error("Failed to fetch enhanced candidate matches");
       return await response.json();
@@ -78,11 +86,27 @@ export const apiClient = {
   },
 
   // Candidate endpoints
-  getAllCandidates: () =>
-    fetch(`${API_BASE_URL}/candidates`).then((res) => res.json()),
+  getAllCandidates: () => {
+    // Get token from localStorage
+    const token = localStorage.getItem("accessToken");
+
+    return fetch(`${API_BASE_URL}/candidates`, {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    }).then((res) => res.json());
+  },
 
   async getCandidate(resumeId: string): Promise<CandidateWithSkills> {
-    const response = await fetch(`${API_BASE_URL}/candidates/${resumeId}`);
+    // Get token from localStorage
+    const token = localStorage.getItem("accessToken");
+
+    const response = await fetch(`${API_BASE_URL}/candidates/${resumeId}`, {
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+
     if (!response.ok) throw new Error("Failed to fetch candidate details");
     const data = await response.json();
 
@@ -91,6 +115,61 @@ export const apiClient = {
       ...data.candidate,
       skills: data.skills || [],
     };
+  },
+
+  // Update candidate profile
+  async updateResume(resumeId: string, resumeData: any): Promise<any> {
+    // Get token from localStorage
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      throw new Error("You must be logged in to update a resume");
+    }
+
+    const response = await fetch(
+      `${API_BASE_URL}/candidates/${resumeId}/update`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(resumeData),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to update resume");
+    }
+
+    return response.json();
+  },
+
+  // Update job posting
+  async updateJob(jobId: string, jobData: any): Promise<any> {
+    // Get token from localStorage
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      throw new Error("You must be logged in to update a job");
+    }
+
+    const response = await fetch(`${API_BASE_URL}/jobs/${jobId}/update`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(jobData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to update job");
+    }
+
+    return response.json();
   },
 
   // Find matching jobs for a candidate

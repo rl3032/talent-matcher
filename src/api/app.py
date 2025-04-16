@@ -10,15 +10,101 @@ from src.knowledge_graph.matcher import KnowledgeGraphMatcher
 from src.etl.data_loader import initialize_knowledge_graph
 import os
 import json
-from flask_jwt_extended import jwt_required, current_user
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 import math
+import datetime
+import uuid
+from src.config import API_PORT
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+# Configure JWT
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "default-dev-key")
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=24)
+jwt = JWTManager(app)
+
 # Initialize knowledge graph
 kg = None
 matcher = None
+
+# User class to store user information
+class User:
+    def __init__(self, email, password_hash, name, role, profile_id=None):
+        self.email = email
+        self.password_hash = password_hash
+        self.name = name
+        self.role = role  # 'hiring_manager' or 'candidate'
+        self.profile_id = profile_id  # job_id for hiring manager, resume_id for candidate
+
+    def to_dict(self):
+        return {
+            'email': self.email,
+            'name': self.name,
+            'role': self.role,
+            'profile_id': self.profile_id
+        }
+        
+    @classmethod
+    def find_by_email(cls, email):
+        """Find a user by email in the database."""
+        with kg.driver.session() as session:
+            result = session.run("""
+                MATCH (u:User {email: $email})
+                RETURN u.email as email, u.password_hash as password_hash, 
+                       u.name as name, u.role as role, u.profile_id as profile_id
+            """, {"email": email})
+            
+            record = result.single()
+            if record:
+                return cls(
+                    email=record["email"],
+                    password_hash=record["password_hash"],
+                    name=record["name"],
+                    role=record["role"],
+                    profile_id=record["profile_id"]
+                )
+            return None
+    
+    @classmethod
+    def create(cls, email, password_hash, name, role, profile_id=None):
+        """Create a new user in the database."""
+        with kg.driver.session() as session:
+            session.run("""
+                CREATE (u:User {
+                    email: $email,
+                    password_hash: $password_hash,
+                    name: $name,
+                    role: $role,
+                    profile_id: $profile_id,
+                    created_at: datetime()
+                })
+            """, {
+                "email": email,
+                "password_hash": password_hash,
+                "name": name,
+                "role": role,
+                "profile_id": profile_id
+            })
+            
+            return cls(email, password_hash, name, role, profile_id)
+    
+    def update_profile_id(self, profile_id):
+        """Update the user's profile_id in the database."""
+        with kg.driver.session() as session:
+            session.run("""
+                MATCH (u:User {email: $email})
+                SET u.profile_id = $profile_id
+            """, {"email": self.email, "profile_id": profile_id})
+            
+            self.profile_id = profile_id
+
+# User loader callback for Flask-JWT-Extended
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return User.find_by_email(identity)
 
 # Helper function to format match results
 def format_match_results(matches):
@@ -123,9 +209,116 @@ def init_app():
 # Initialize on import
 init_app()
 
+# Authentication routes
+@app.route('/api/auth/register', methods=['POST'])
+def register():
+    """Register a new user."""
+    data = request.json
+    
+    # Validate required fields
+    required_fields = ['email', 'password', 'name', 'role']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    email = data['email']
+    password = data['password']
+    name = data['name']
+    role = data['role']
+    
+    # Validate role
+    if role not in ['hiring_manager', 'candidate']:
+        return jsonify({"error": "Invalid role"}), 400
+    
+    # Check if user already exists
+    if User.find_by_email(email):
+        return jsonify({"error": "User already exists"}), 409
+    
+    # Create new user
+    password_hash = generate_password_hash(password)
+    user = User.create(email, password_hash, name, role)
+    
+    # Create access token
+    access_token = create_access_token(identity=email)
+    
+    return jsonify({
+        "access_token": access_token,
+        "user": user.to_dict()
+    }), 201
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    """Log in an existing user."""
+    data = request.json
+    
+    # Validate required fields
+    required_fields = ['email', 'password']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    email = data['email']
+    password = data['password']
+    
+    # Check if user exists
+    user = User.find_by_email(email)
+    if not user:
+        return jsonify({"error": "Invalid credentials"}), 401
+    
+    # Check password
+    if not check_password_hash(user.password_hash, password):
+        return jsonify({"error": "Invalid credentials"}), 401
+    
+    # Create access token
+    access_token = create_access_token(identity=email)
+    
+    return jsonify({
+        "access_token": access_token,
+        "user": user.to_dict()
+    })
+
+@app.route('/api/auth/me', methods=['GET'])
+@jwt_required()
+def get_user_profile():
+    """Get current user profile."""
+    return jsonify({"user": current_user.to_dict()})
+
+@app.route('/api/auth/update-profile', methods=['PUT'])
+@jwt_required()
+def update_profile():
+    """Update user profile."""
+    data = request.json
+    
+    # Update user profile
+    if 'name' in data:
+        current_user.name = data['name']
+    
+    # Update profile_id
+    if 'profile_id' in data:
+        current_user.update_profile_id(data['profile_id'])
+    
+    return jsonify({"user": current_user.to_dict()})
+
 @app.route('/api/jobs/<job_id>/candidates', methods=['GET'])
+@jwt_required()
 def get_job_matches(job_id):
     """Get candidates matching a job."""
+    # Check if the user has permission to view candidates for this job
+    # Allow access if: user is an admin, or the user owns this job
+    if current_user.role == 'hiring_manager':
+        with kg.driver.session() as session:
+            # Check if job exists and belongs to the current user
+            job_result = session.run("""
+                MATCH (j:Job {job_id: $job_id})
+                RETURN j.owner_email as owner_email
+            """, {"job_id": job_id})
+            
+            job = job_result.single()
+            if not job:
+                return jsonify({"error": f"Job with ID {job_id} not found"}), 404
+            
+            # Allow access only if the user is the job owner or an admin
+            if job["owner_email"] != current_user.email:
+                return jsonify({"error": "You do not have permission to view candidates for this job"}), 403
+    
     limit = request.args.get('limit', 10, type=int)
     matches = kg.find_matching_candidates(job_id, limit=limit)
     
@@ -138,8 +331,31 @@ def get_job_matches(job_id):
     return jsonify(matches)
 
 @app.route('/api/jobs/<job_id>/candidates/enhanced', methods=['GET'])
+@jwt_required()
 def get_job_matches_enhanced(job_id):
     """Get candidates matching a job using enhanced algorithm with location and semantic matching."""
+    # Check if the user has permission to view candidates for this job
+    # Allow access if: user is an admin, or the user owns this job
+    if current_user.role != 'admin':  # Admin can access any job's candidates
+        if current_user.role == 'hiring_manager':
+            with kg.driver.session() as session:
+                # Check if job exists and belongs to the current user
+                job_result = session.run("""
+                    MATCH (j:Job {job_id: $job_id})
+                    RETURN j.owner_email as owner_email
+                """, {"job_id": job_id})
+                
+                job = job_result.single()
+                if not job:
+                    return jsonify({"error": f"Job with ID {job_id} not found"}), 404
+                
+                # Allow access only if the user is the job owner
+                if job["owner_email"] != current_user.email:
+                    return jsonify({"error": "You do not have permission to view candidates for this job"}), 403
+        else:
+            # Not an admin or hiring manager
+            return jsonify({"error": "You do not have permission to view candidates for this job"}), 403
+    
     limit = request.args.get('limit', 10, type=int)
     
     # Get optional weight parameters with better defaults for differentiation (domain removed)
@@ -259,14 +475,33 @@ def get_career_path():
 @app.route('/api/jobs', methods=['GET'])
 def get_all_jobs():
     """Get all available jobs."""
+    company = request.args.get('company')
+    email = request.args.get('owner_email')
+    
     with kg.driver.session() as session:
-        # Get all jobs
-        result = session.run("""
+        # Build the query based on filters
+        query = """
             MATCH (j:Job)
+        """
+        
+        params = {}
+        
+        # Add filters if provided
+        if company:
+            query += " WHERE j.company = $company"
+            params['company'] = company
+            
+        if email:
+            query += " MATCH (u:User {email: $email})-[:CREATED]->(j)"
+            params['email'] = email
+            
+        query += """
             RETURN j.job_id as job_id, j.title as title, j.company as company,
-                   j.location as location, j.domain as domain
+                   j.location as location, j.domain as domain, j.owner_email as owner_email
             ORDER BY j.job_id
-        """)
+        """
+        
+        result = session.run(query, params)
         
         jobs = [dict(record) for record in result]
         
@@ -288,8 +523,14 @@ def get_all_jobs():
         })
 
 @app.route('/api/candidates', methods=['GET'])
+@jwt_required()
 def get_all_candidates():
     """Get all available candidates."""
+    # Check if the user has permission to view all candidates
+    # Only hiring managers and admins can see all candidates
+    if current_user.role not in ['hiring_manager', 'admin']:
+        return jsonify({"error": "You do not have permission to view all candidates"}), 403
+        
     with kg.driver.session() as session:
         # Get all candidates
         result = session.run("""
@@ -658,8 +899,16 @@ def get_skill_graph_data(skill_id):
         })
 
 @app.route('/api/candidates/<resume_id>', methods=['GET'])
+@jwt_required()
 def get_candidate(resume_id):
     """Get a specific candidate by ID with comprehensive resume data."""
+    # Check permissions:
+    # 1. Admin can view any candidate
+    # 2. Hiring managers can view any candidate
+    # 3. Candidates can only view their own profile
+    if current_user.role == 'candidate' and current_user.profile_id != resume_id:
+        return jsonify({"error": "You don't have permission to view this candidate's profile"}), 403
+        
     with kg.driver.session() as session:
         # Get candidate details with more comprehensive data
         candidate_result = session.run("""
@@ -924,6 +1173,742 @@ def generate_embeddings():
     except Exception as e:
         return jsonify({"error": f"Error generating embeddings: {str(e)}"}), 500
 
+# Routes for job posting and resume uploads
+@app.route('/api/jobs/create', methods=['POST'])
+@jwt_required()
+def create_job():
+    """Create a new job posting."""
+    # Check if user is a hiring manager
+    if current_user.role != 'hiring_manager':
+        return jsonify({"error": "Only hiring managers can post jobs"}), 403
+    
+    data = request.json
+    
+    # Validate required fields
+    required_fields = ['title', 'company', 'location', 'summary', 'domain', 'responsibilities', 'qualifications']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    # Generate a unique job_id
+    job_id = f"job_{uuid.uuid4().hex[:8]}"
+    
+    # Prepare job data
+    job_data = {
+        "job_id": job_id,
+        "title": data['title'],
+        "company": data['company'],
+        "location": data['location'],
+        "domain": data['domain'],
+        "job_type": data.get('job_type', 'Full-time'),
+        "summary": data['summary'],
+        "responsibilities": data['responsibilities'],
+        "qualifications": data['qualifications'],
+        "salary_range": data.get('salary_range', 'Competitive'),
+        "owner_email": current_user.email,
+        "skills": {
+            "primary": data.get('primary_skills', []),
+            "secondary": data.get('secondary_skills', [])
+        }
+    }
+    
+    # Store job in the knowledge graph
+    with kg.driver.session() as session:
+        # Create job node
+        session.run("""
+            CREATE (j:Job {
+                job_id: $job_id,
+                title: $title,
+                company: $company,
+                location: $location,
+                domain: $domain,
+                job_type: $job_type,
+                summary: $summary,
+                responsibilities: $responsibilities,
+                qualifications: $qualifications,
+                salary_range: $salary_range,
+                owner_email: $owner_email
+            })
+        """, job_data)
+        
+        # Create relationship between user and job
+        session.run("""
+            MATCH (u:User {email: $email})
+            MATCH (j:Job {job_id: $job_id})
+            CREATE (u)-[:CREATED]->(j)
+        """, {
+            "email": current_user.email,
+            "job_id": job_id
+        })
+        
+        # Add primary skills
+        for skill in job_data['skills']['primary']:
+            session.run("""
+                MATCH (s:Skill {skill_id: $skill_id})
+                MATCH (j:Job {job_id: $job_id})
+                CREATE (j)-[r:REQUIRES_PRIMARY {
+                    level: $level,
+                    proficiency: $proficiency,
+                    importance: $importance
+                }]->(s)
+            """, {
+                "job_id": job_id,
+                "skill_id": skill['skill_id'],
+                "level": skill.get('level', 5),
+                "proficiency": skill.get('proficiency', 'Intermediate'),
+                "importance": skill.get('importance', 0.7)
+            })
+        
+        # Add secondary skills
+        for skill in job_data['skills']['secondary']:
+            session.run("""
+                MATCH (s:Skill {skill_id: $skill_id})
+                MATCH (j:Job {job_id: $job_id})
+                CREATE (j)-[r:REQUIRES_SECONDARY {
+                    level: $level,
+                    proficiency: $proficiency,
+                    importance: $importance
+                }]->(s)
+            """, {
+                "job_id": job_id,
+                "skill_id": skill['skill_id'],
+                "level": skill.get('level', 3),
+                "proficiency": skill.get('proficiency', 'Beginner'),
+                "importance": skill.get('importance', 0.4)
+            })
+    
+    # Update user's profile_id
+    current_user.update_profile_id(job_id)
+    
+    return jsonify({
+        "job_id": job_id,
+        "message": "Job created successfully"
+    }), 201
+
+@app.route('/api/resumes/upload', methods=['POST'])
+@jwt_required()
+def upload_resume():
+    """Upload a new resume."""
+    # Check if user is a candidate
+    if current_user.role != 'candidate':
+        return jsonify({"error": "Only candidates can upload resumes"}), 403
+    
+    data = request.json
+    
+    # Validate required fields
+    required_fields = ['name', 'email', 'title', 'location', 'summary', 'experience', 'education', 'skills']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    # Generate a unique resume_id
+    resume_id = f"resume_{uuid.uuid4().hex[:8]}"
+    
+    # Prepare resume data
+    resume_data = {
+        "resume_id": resume_id,
+        "name": data['name'],
+        "email": data['email'],
+        "phone": data.get('phone', ''),
+        "location": data['location'],
+        "title": data['title'],
+        "summary": data['summary'],
+        "education": data['education'],
+        "certifications": data.get('certifications', []),
+        "languages": data.get('languages', []),
+        "experience": data['experience'],
+        "skills": {
+            "core": data['skills'].get('core', []),
+            "secondary": data['skills'].get('secondary', []),
+            "domain": data.get('domain', 'general')
+        }
+    }
+    
+    # Store resume in the knowledge graph
+    with kg.driver.session() as session:
+        # Create candidate node
+        session.run("""
+            CREATE (c:Candidate {
+                resume_id: $resume_id,
+                name: $name,
+                email: $email,
+                phone: $phone,
+                location: $location,
+                title: $title,
+                summary: $summary,
+                education: $education,
+                certifications: $certifications,
+                languages: $languages,
+                domain: $domain
+            })
+        """, {
+            "resume_id": resume_id,
+            "name": resume_data['name'],
+            "email": resume_data['email'],
+            "phone": resume_data['phone'],
+            "location": resume_data['location'],
+            "title": resume_data['title'],
+            "summary": resume_data['summary'],
+            "education": json.dumps(resume_data['education']),
+            "certifications": json.dumps(resume_data['certifications']),
+            "languages": json.dumps(resume_data['languages']),
+            "domain": resume_data['skills']['domain']
+        })
+        
+        # Add experiences
+        for exp in resume_data['experience']:
+            # Create experience node
+            session.run("""
+                MATCH (c:Candidate {resume_id: $resume_id})
+                CREATE (c)-[:HAS_EXPERIENCE]->(e:Experience {
+                    job_title: $job_title,
+                    company: $company,
+                    start_date: $start_date,
+                    end_date: $end_date,
+                    description: $description
+                })
+            """, {
+                "resume_id": resume_id,
+                "job_title": exp['job_title'],
+                "company": exp['company'],
+                "start_date": exp['start_date'],
+                "end_date": exp['end_date'],
+                "description": json.dumps(exp['description'])
+            })
+        
+        # Add core skills
+        for skill in resume_data['skills']['core']:
+            session.run("""
+                MATCH (s:Skill {skill_id: $skill_id})
+                MATCH (c:Candidate {resume_id: $resume_id})
+                CREATE (c)-[r:HAS_CORE_SKILL {
+                    level: $level,
+                    years: $years,
+                    proficiency: $proficiency
+                }]->(s)
+            """, {
+                "resume_id": resume_id,
+                "skill_id": skill['skill_id'],
+                "level": skill.get('level', 5),
+                "years": skill.get('experience_years', 0.5),
+                "proficiency": skill.get('proficiency', 'Intermediate')
+            })
+        
+        # Add secondary skills
+        for skill in resume_data['skills']['secondary']:
+            session.run("""
+                MATCH (s:Skill {skill_id: $skill_id})
+                MATCH (c:Candidate {resume_id: $resume_id})
+                CREATE (c)-[r:HAS_SECONDARY_SKILL {
+                    level: $level,
+                    years: $years,
+                    proficiency: $proficiency
+                }]->(s)
+            """, {
+                "resume_id": resume_id,
+                "skill_id": skill['skill_id'],
+                "level": skill.get('level', 3),
+                "years": skill.get('experience_years', 0.2),
+                "proficiency": skill.get('proficiency', 'Beginner')
+            })
+    
+    # Update user's profile_id
+    current_user.update_profile_id(resume_id)
+    
+    return jsonify({
+        "resume_id": resume_id,
+        "message": "Resume uploaded successfully"
+    }), 201
+
+@app.route('/api/users', methods=['GET'])
+@jwt_required()
+def get_all_users():
+    """Get all users - admin function."""
+    # Check if current user has admin privileges
+    if not hasattr(current_user, 'role') or current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized access"}), 403
+        
+    with kg.driver.session() as session:
+        result = session.run("""
+            MATCH (u:User)
+            RETURN u.email as email, u.name as name, 
+                   u.role as role, u.profile_id as profile_id,
+                   u.created_at as created_at
+        """)
+        
+        users = [dict(record) for record in result]
+        return jsonify({"users": users})
+
+@app.route('/api/users/<email>', methods=['GET'])
+@jwt_required()
+def get_user_by_email(email):
+    """Get user by email."""
+    # Check permissions - a user can only access their own profile unless admin
+    if current_user.email != email and current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized access"}), 403
+        
+    user = User.find_by_email(email)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+        
+    return jsonify({"user": user.to_dict()})
+
+@app.route('/api/users/<email>', methods=['PUT'])
+@jwt_required()
+def update_user(email):
+    """Update user information."""
+    # Check permissions - a user can only update their own profile unless admin
+    if current_user.email != email and current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized access"}), 403
+        
+    user = User.find_by_email(email)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    data = request.json
+    updates = {}
+    
+    # Fields that can be updated
+    if 'name' in data:
+        updates['name'] = data['name']
+    
+    if 'role' in data and current_user.role == 'admin':  # Only admin can change roles
+        updates['role'] = data['role']
+    
+    if 'profile_id' in data:
+        user.update_profile_id(data['profile_id'])
+    
+    # If we have fields to update other than profile_id
+    if updates:
+        with kg.driver.session() as session:
+            update_query = "MATCH (u:User {email: $email}) SET "
+            update_query += ", ".join(f"u.{key} = ${key}" for key in updates)
+            
+            params = {"email": email}
+            params.update(updates)
+            
+            session.run(update_query, params)
+            
+            # Update the user object
+            for key, value in updates.items():
+                setattr(user, key, value)
+    
+    return jsonify({"user": user.to_dict()})
+
+@app.route('/api/users/<email>', methods=['DELETE'])
+@jwt_required()
+def delete_user(email):
+    """Delete a user account."""
+    # Only admin or the user themselves can delete an account
+    if current_user.email != email and current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized access"}), 403
+    
+    with kg.driver.session() as session:
+        # Check if user exists
+        result = session.run("""
+            MATCH (u:User {email: $email})
+            RETURN count(u) as count
+        """, {"email": email})
+        
+        if result.single()["count"] == 0:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Delete the user
+        session.run("""
+            MATCH (u:User {email: $email})
+            DELETE u
+        """, {"email": email})
+    
+    return jsonify({"message": "User deleted successfully"})
+
+@app.route('/api/users/role/<role>', methods=['GET'])
+@jwt_required()
+def get_users_by_role(role):
+    """Get users by role."""
+    # Only admin can get all users of a certain role
+    if current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized access"}), 403
+    
+    # Validate role
+    if role not in ['hiring_manager', 'candidate', 'admin']:
+        return jsonify({"error": "Invalid role"}), 400
+    
+    with kg.driver.session() as session:
+        result = session.run("""
+            MATCH (u:User {role: $role})
+            RETURN u.email as email, u.name as name, 
+                   u.role as role, u.profile_id as profile_id,
+                   u.created_at as created_at
+        """, {"role": role})
+        
+        users = [dict(record) for record in result]
+        return jsonify({"users": users})
+
+@app.route('/api/jobs/<job_id>', methods=['DELETE'])
+@jwt_required()
+def delete_job(job_id):
+    """Delete a job posting."""
+    # Check if user is a hiring manager
+    if current_user.role != 'hiring_manager':
+        return jsonify({"error": "Only hiring managers can delete jobs"}), 403
+    
+    with kg.driver.session() as session:
+        # Check if job exists and belongs to the current user
+        job_result = session.run("""
+            MATCH (j:Job {job_id: $job_id})
+            RETURN j.owner_email as owner_email
+        """, {"job_id": job_id})
+        
+        job = job_result.single()
+        if not job:
+            return jsonify({"error": f"Job with ID {job_id} not found"}), 404
+            
+        # Check if the current user owns this job
+        if job["owner_email"] != current_user.email and current_user.role != 'admin':
+            return jsonify({"error": "You do not have permission to delete this job"}), 403
+        
+        # Delete all relationships and the job
+        session.run("""
+            MATCH (j:Job {job_id: $job_id})
+            OPTIONAL MATCH (j)-[r]-()
+            DELETE r, j
+        """, {"job_id": job_id})
+    
+    return jsonify({"message": "Job deleted successfully"}), 200
+
+@app.route('/api/admin/jobs/assign-ownership', methods=['POST'])
+@jwt_required()
+def assign_job_ownership():
+    """Assign ownership of jobs to a specific user. Admin only."""
+    # Check if user is admin
+    if not hasattr(current_user, 'role') or current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized access"}), 403
+    
+    data = request.json
+    
+    # Validate required fields
+    required_fields = ['email', 'job_ids']
+    if not all(field in data for field in required_fields):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    email = data['email']
+    job_ids = data['job_ids']
+    
+    # Check if user exists
+    user = User.find_by_email(email)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    # Check if user is a hiring manager
+    if user.role != 'hiring_manager':
+        return jsonify({"error": "User must be a hiring manager"}), 400
+    
+    # Update ownership for each job
+    results = {"success": [], "failed": []}
+    with kg.driver.session() as session:
+        for job_id in job_ids:
+            # Check if job exists
+            job_result = session.run("""
+                MATCH (j:Job {job_id: $job_id})
+                RETURN count(j) as count
+            """, {"job_id": job_id})
+            
+            job_exists = job_result.single()["count"] > 0
+            if not job_exists:
+                results["failed"].append({"job_id": job_id, "reason": "Job not found"})
+                continue
+            
+            try:
+                # Update job ownership
+                session.run("""
+                    MATCH (j:Job {job_id: $job_id})
+                    SET j.owner_email = $email
+                """, {"job_id": job_id, "email": email})
+                
+                # Create relationship between user and job
+                session.run("""
+                    MATCH (u:User {email: $email})
+                    MATCH (j:Job {job_id: $job_id})
+                    MERGE (u)-[:CREATED]->(j)
+                """, {"email": email, "job_id": job_id})
+                
+                results["success"].append(job_id)
+            except Exception as e:
+                results["failed"].append({"job_id": job_id, "reason": str(e)})
+    
+    return jsonify({
+        "message": f"Assigned {len(results['success'])} jobs to {email}",
+        "results": results
+    })
+
+@app.route('/api/admin/users/make-admin', methods=['POST'])
+@jwt_required()
+def make_user_admin():
+    """Promote a user to admin status. Admin only."""
+    # Check if user is admin
+    if not hasattr(current_user, 'role') or current_user.role != 'admin':
+        return jsonify({"error": "Unauthorized access"}), 403
+    
+    data = request.json
+    
+    # Validate required fields
+    if 'email' not in data:
+        return jsonify({"error": "Missing email field"}), 400
+    
+    email = data['email']
+    
+    # Check if user exists
+    user = User.find_by_email(email)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    # Update user role to admin
+    with kg.driver.session() as session:
+        session.run("""
+            MATCH (u:User {email: $email})
+            SET u.role = 'admin'
+        """, {"email": email})
+    
+    return jsonify({
+        "message": f"User {email} promoted to admin",
+        "user": {"email": email, "role": "admin"}
+    })
+
+@app.route('/api/candidates/<resume_id>/update', methods=['PUT'])
+@jwt_required()
+def update_candidate(resume_id):
+    """Update candidate profile.
+    
+    This endpoint allows a candidate to update their profile information.
+    Only the candidate who owns the profile can update it.
+    """
+    current_user_id = get_jwt_identity()
+    user = User.find_by_id(current_user_id)
+    
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    # Make sure the user is the owner of the profile
+    if user.profile_id != resume_id:
+        return jsonify({"error": "You don't have permission to update this profile"}), 403
+    
+    # Get request data
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    try:
+        # Connect to database
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Update candidate basic information
+        cursor.execute('''
+            UPDATE candidates
+            SET name = ?, email = ?, phone = ?, location = ?, title = ?, summary = ?, domain = ?
+            WHERE resume_id = ?
+        ''', (
+            data.get('name', ''),
+            data.get('email', ''),
+            data.get('phone', ''),
+            data.get('location', ''),
+            data.get('title', ''),
+            data.get('summary', ''),
+            data.get('domain', ''),
+            resume_id
+        ))
+        
+        # Handle skills update - first delete existing skills
+        cursor.execute('DELETE FROM candidate_skills WHERE resume_id = ?', (resume_id,))
+        
+        # Add new skills
+        all_skills = data.get('primary_skills', []) + data.get('secondary_skills', [])
+        for skill in all_skills:
+            cursor.execute('''
+                INSERT INTO candidate_skills (resume_id, skill_id, level, is_primary, experience_years)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (
+                resume_id,
+                skill.get('skill_id', ''),
+                skill.get('level', 5),
+                skill.get('is_primary', True),
+                skill.get('experience_years', 1)
+            ))
+        
+        # Handle education - delete existing entries
+        cursor.execute('DELETE FROM candidate_education WHERE resume_id = ?', (resume_id,))
+        
+        # Add new education entries
+        for edu in data.get('education', []):
+            cursor.execute('''
+                INSERT INTO candidate_education (resume_id, degree, institution, graduation_year)
+                VALUES (?, ?, ?, ?)
+            ''', (
+                resume_id,
+                edu.get('degree', ''),
+                edu.get('institution', ''),
+                edu.get('graduation_year', 0)
+            ))
+        
+        # Handle experience - delete existing entries
+        cursor.execute('DELETE FROM candidate_experience WHERE resume_id = ?', (resume_id,))
+        
+        # Add new experience entries
+        for exp in data.get('experience', []):
+            exp_id = str(uuid.uuid4())
+            cursor.execute('''
+                INSERT INTO candidate_experience (experience_id, resume_id, job_title, company, start_date, end_date)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                exp_id,
+                resume_id,
+                exp.get('job_title', ''),
+                exp.get('company', ''),
+                exp.get('start_date', ''),
+                exp.get('end_date', '')
+            ))
+            
+            # Add experience details
+            for desc in exp.get('description', []):
+                cursor.execute('''
+                    INSERT INTO candidate_experience_details (experience_id, detail)
+                    VALUES (?, ?)
+                ''', (exp_id, desc))
+        
+        conn.commit()
+        
+        return jsonify({
+            "success": True,
+            "message": "Profile updated successfully",
+            "resume_id": resume_id
+        })
+    
+    except Exception as e:
+        app.logger.error(f"Error updating profile: {str(e)}")
+        return jsonify({"error": f"Error updating profile: {str(e)}"}), 500
+    finally:
+        if conn:
+            conn.close()
+
+@app.route('/api/jobs/<job_id>/update', methods=['PUT'])
+@jwt_required()
+def update_job(job_id):
+    """Update job posting.
+    
+    This endpoint allows a hiring manager to update their job posting.
+    Only the hiring manager who owns the job can update it.
+    """
+    current_user_id = get_jwt_identity()
+    user = User.find_by_id(current_user_id)
+    
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    # Make sure the user is authorized (hiring manager or admin)
+    if user.role not in ['hiring_manager', 'admin']:
+        return jsonify({"error": "Only hiring managers can update job postings"}), 403
+    
+    # Get request data
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    try:
+        # Connect to database
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        # Check if user owns the job
+        cursor.execute('''
+            SELECT owner_email FROM jobs WHERE job_id = ?
+        ''', (job_id,))
+        
+        job_info = cursor.fetchone()
+        if not job_info:
+            return jsonify({"error": "Job not found"}), 404
+        
+        # Only job owner or admin can update
+        if job_info['owner_email'] != user.email and user.role != 'admin':
+            return jsonify({"error": "You don't have permission to update this job"}), 403
+        
+        # Update job basic information
+        cursor.execute('''
+            UPDATE jobs
+            SET title = ?, company = ?, location = ?, domain = ?, job_type = ?, summary = ?, salary_range = ?
+            WHERE job_id = ?
+        ''', (
+            data.get('title', ''),
+            data.get('company', ''),
+            data.get('location', ''),
+            data.get('domain', ''),
+            data.get('job_type', ''),
+            data.get('summary', ''),
+            data.get('salary_range', ''),
+            job_id
+        ))
+        
+        # Handle job responsibilities - delete existing entries
+        cursor.execute('DELETE FROM job_responsibilities WHERE job_id = ?', (job_id,))
+        
+        # Add new responsibilities
+        for resp in data.get('responsibilities', []):
+            cursor.execute('''
+                INSERT INTO job_responsibilities (job_id, responsibility)
+                VALUES (?, ?)
+            ''', (job_id, resp))
+        
+        # Handle job qualifications - delete existing entries
+        cursor.execute('DELETE FROM job_qualifications WHERE job_id = ?', (job_id,))
+        
+        # Add new qualifications
+        for qual in data.get('qualifications', []):
+            cursor.execute('''
+                INSERT INTO job_qualifications (job_id, qualification)
+                VALUES (?, ?)
+            ''', (job_id, qual))
+        
+        # Handle skills update - first delete existing skills
+        cursor.execute('DELETE FROM job_skills WHERE job_id = ?', (job_id,))
+        
+        # Add primary skills
+        for skill in data.get('primary_skills', []):
+            cursor.execute('''
+                INSERT INTO job_skills (job_id, skill_id, level, is_primary, importance)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (
+                job_id,
+                skill.get('skill_id', ''),
+                skill.get('level', 5),
+                True,
+                skill.get('importance', 0.7)
+            ))
+        
+        # Add secondary skills
+        for skill in data.get('secondary_skills', []):
+            cursor.execute('''
+                INSERT INTO job_skills (job_id, skill_id, level, is_primary, importance)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (
+                job_id,
+                skill.get('skill_id', ''),
+                skill.get('level', 3),
+                False,
+                skill.get('importance', 0.3)
+            ))
+        
+        conn.commit()
+        
+        return jsonify({
+            "success": True,
+            "message": "Job updated successfully",
+            "job_id": job_id
+        })
+    
+    except Exception as e:
+        app.logger.error(f"Error updating job: {str(e)}")
+        return jsonify({"error": f"Error updating job: {str(e)}"}), 500
+    finally:
+        if conn:
+            conn.close()
+
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8080))
+    port = int(os.environ.get('PORT', API_PORT))
     app.run(host='0.0.0.0', port=port, debug=True) 

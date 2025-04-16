@@ -1,8 +1,15 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import Layout from "../components/Layout";
+import { useAuth } from "../lib/AuthContext";
 
 export default function Home() {
+  const { user } = useAuth();
+  const isHiringManagerOrAdmin =
+    user && (user.role === "hiring_manager" || user.role === "admin");
+
   return (
     <Layout>
       <div className="bg-white shadow-xl rounded-lg overflow-hidden">
@@ -15,7 +22,11 @@ export default function Home() {
             skill graph analysis
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+          <div
+            className={`grid grid-cols-1 ${
+              isHiringManagerOrAdmin ? "md:grid-cols-3" : "md:grid-cols-2"
+            } gap-6 mt-10`}
+          >
             <FeaturedCard
               title="Browse Jobs"
               description="Explore job listings and find matching candidates based on skill requirements"
@@ -24,14 +35,17 @@ export default function Home() {
               textColor="text-blue-600"
               hoverColor="hover:bg-blue-100"
             />
-            <FeaturedCard
-              title="Talent Pool"
-              description="View candidate profiles and match them with suitable job opportunities"
-              href="/candidates"
-              color="bg-green-50"
-              textColor="text-green-600"
-              hoverColor="hover:bg-green-100"
-            />
+            {/* Only show Candidates card for hiring managers and admins */}
+            {isHiringManagerOrAdmin && (
+              <FeaturedCard
+                title="Talent Pool"
+                description="View candidate profiles and match them with suitable job opportunities"
+                href="/candidates"
+                color="bg-green-50"
+                textColor="text-green-600"
+                hoverColor="hover:bg-green-100"
+              />
+            )}
             <FeaturedCard
               title="Skills Library"
               description="Explore the skills database and relationships between different skills"
