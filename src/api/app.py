@@ -837,13 +837,8 @@ def get_candidate_recommendations(resume_id, job_id):
 @app.route('/api/graph/skill/<skill_id>', methods=['GET'])
 def get_skill_graph_data(skill_id):
     """Get graph data for a skill."""
-    depth = int(request.args.get('depth', 2))
-    
-    # Limit depth to valid range (1-3)
-    if depth < 1:
-        depth = 1
-    elif depth > 3:
-        depth = 3
+    # Always use depth=1 for direct connections only
+    depth = 1
     
     with kg.driver.session() as session:
         # Get the central skill
@@ -856,9 +851,9 @@ def get_skill_graph_data(skill_id):
         if not nodes:
             return jsonify({"error": f"Skill with ID {skill_id} not found"}), 404
             
-        # Get related skills up to specified depth
+        # Get related skills - direct connections only
         result = session.run(f"""
-            MATCH path = (s:Skill {{skill_id: $skill_id}})-[r*1..{depth}]-(related:Skill)
+            MATCH path = (s:Skill {{skill_id: $skill_id}})-[:related_to|REQUIRES_PRIMARY|REQUIRES_SECONDARY|HAS_CORE_SKILL|HAS_SECONDARY_SKILL]-(related:Skill)
             UNWIND nodes(path) as node
             UNWIND relationships(path) as rel
             RETURN DISTINCT 
@@ -1981,6 +1976,57 @@ def analyze_skill_gap_endpoint(candidate_id, job_id):
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/graph/skills-network', methods=['GET'])
+def get_skills_network():
+    """Get complete network of skills and relationships for visualization."""
+    with kg.driver.session() as session:
+        # Get all skills
+        result = session.run("""
+            MATCH (s:Skill)
+            RETURN s.skill_id as id, s.name as name, s.category as type
+        """)
+        
+        # Create a dictionary of nodes for fast lookups
+        nodes = [dict(record) for record in result]
+        nodes_dict = {node['id']: node for node in nodes}
+        
+        # Get all relationships between skills
+        result = session.run("""
+            MATCH (s1:Skill)-[r:related_to|complementary_to|REQUIRES_PRIMARY|REQUIRES_SECONDARY|HAS_CORE_SKILL|HAS_SECONDARY_SKILL]-(s2:Skill)
+            RETURN 
+                s1.skill_id as source, 
+                s2.skill_id as target, 
+                type(r) as relationship
+        """)
+        
+        # Process relationships and deduplicate
+        edges = []
+        edge_keys = set()
+        
+        for record in result:
+            source = record['source']
+            target = record['target']
+            rel_type = record['relationship']
+            
+            # Only add edges where both nodes exist
+            if source in nodes_dict and target in nodes_dict:
+                # Create a unique key for each relationship type between two nodes
+                # We sort the IDs to treat A→B and B→A as the same relationship for the graph
+                key = f"{min(source, target)}-{max(source, target)}-{rel_type}"
+                
+                if key not in edge_keys:
+                    edges.append({
+                        'source': source,
+                        'target': target,
+                        'relationship': rel_type
+                    })
+                    edge_keys.add(key)
+        
+        return jsonify({
+            'nodes': list(nodes_dict.values()),
+            'edges': edges
+        })
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', API_PORT))

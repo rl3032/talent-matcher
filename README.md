@@ -6,7 +6,10 @@ Talent Matcher is a comprehensive skill-based job matching platform that uses gr
 
 - **Skill-Based Matching**: Advanced algorithm for matching candidates to jobs based on skills, location, and semantic analysis of experience
 - **Knowledge Graph**: Uses Neo4j graph database to model relationships between skills, jobs, and candidates
-- **Interactive Skill Visualization**: Explore skill relationships and discover related skills
+- **Interactive Skill Visualization**:
+  - Explore skill relationships and discover related skills
+  - View the entire skill network with interactive filtering and search
+  - Visualize connections between skills including related and complementary relationships
 - **Skill Gap Analysis**: Identify missing skills and leverage existing related skills for job opportunities
 - **Comprehensive API**: Full-featured REST API for all platform functionality
 - **Role-Based Access Control**: Secure endpoints and user interfaces based on user roles (admin, hiring manager, job seeker)
@@ -56,7 +59,7 @@ Talent Matcher is a comprehensive skill-based job matching platform that uses gr
 3. Install frontend dependencies
 
    ```bash
-   cd frontend
+   cd src/frontend
    npm install
    ```
 
@@ -78,7 +81,7 @@ Talent Matcher is a comprehensive skill-based job matching platform that uses gr
 6. Start the frontend development server
 
    ```bash
-   cd frontend
+   cd src/frontend
    npm run dev
    ```
 
@@ -94,15 +97,15 @@ Talent Matcher supports three user roles, each with specific permissions:
 
 ## Project Structure
 
-- `/src`: Backend Python code
+- `/src`: All source code
   - `/api`: Flask API endpoints
   - `/knowledge_graph`: Neo4j graph database interaction
   - `/data_generation`: Data generators for sample data
   - `/etl`: Data loading utilities
-- `/frontend`: Next.js/React frontend application
-  - `/app`: Next.js application routes
-  - `/components`: Reusable React components
-  - `/lib`: Utility functions and API client
+  - `/frontend`: Next.js/React frontend application
+    - `/app`: Next.js application routes
+    - `/components`: Reusable React components
+    - `/lib`: Utility functions and API client
 - `/data`: Sample data and schemas
 - `/tests`: Backend tests
 

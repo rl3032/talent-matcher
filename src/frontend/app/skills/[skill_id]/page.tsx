@@ -104,11 +104,17 @@ export default function SkillDetailPage() {
 
         {/* Skill Graph */}
         <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-4">
+            Skill Relationships
+          </h2>
+          <p className="mt-1 mb-4 max-w-2xl text-sm text-gray-500">
+            This graph shows how {skill.name} relates to other skills in our
+            database
+          </p>
           <SkillGraphContainer
             skillId={skill_id as string}
             width={800}
             height={500}
-            depth={2}
           />
         </div>
 

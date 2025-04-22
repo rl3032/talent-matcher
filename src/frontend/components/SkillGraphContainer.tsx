@@ -1,26 +1,25 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { apiClient } from "../lib/api";
-import SkillGraph from "./SkillGraph";
+import NetworkGraph from "./NetworkGraph";
 import { SkillGraphData } from "../types";
 
 interface SkillGraphContainerProps {
   skillId: string;
   width?: number;
   height?: number;
-  depth?: number;
 }
 
 const SkillGraphContainer: React.FC<SkillGraphContainerProps> = ({
   skillId,
   width = 600,
   height = 400,
-  depth = 2,
 }) => {
   const [graphData, setGraphData] = useState<SkillGraphData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string>(skillId);
-  const [graphDepth, setGraphDepth] = useState<number>(depth);
 
   useEffect(() => {
     const fetchGraphData = async () => {
@@ -29,11 +28,8 @@ const SkillGraphContainer: React.FC<SkillGraphContainerProps> = ({
         // Reset error state
         setError(null);
 
-        // Fetch graph data for the selected skill
-        const data = await apiClient.getSkillGraphData(
-          selectedNodeId,
-          graphDepth
-        );
+        // Fetch graph data for the selected skill (direct connections only)
+        const data = await apiClient.getSkillGraphData(selectedNodeId);
 
         // Deduplicate edges with the same source, target, and relationship type
         if (data.edges && data.edges.length > 0) {
@@ -68,22 +64,12 @@ const SkillGraphContainer: React.FC<SkillGraphContainerProps> = ({
     };
 
     fetchGraphData();
-  }, [selectedNodeId, graphDepth]);
+  }, [selectedNodeId]);
 
   const handleNodeClick = (nodeId: string) => {
     if (nodeId !== selectedNodeId) {
       setLoading(true);
       setSelectedNodeId(nodeId);
-
-      // We need to re-fetch graph data when a new node is selected
-      // This happens automatically due to the useEffect dependency on selectedNodeId
-    }
-  };
-
-  const handleDepthChange = (newDepth: number) => {
-    if (newDepth !== graphDepth) {
-      setLoading(true);
-      setGraphDepth(newDepth);
     }
   };
 
@@ -91,32 +77,6 @@ const SkillGraphContainer: React.FC<SkillGraphContainerProps> = ({
     return (
       <div className="bg-white p-4 rounded-lg shadow">
         <h3 className="text-lg font-medium mb-2">Skill Relationship Graph</h3>
-
-        <div className="flex mb-4 space-x-2">
-          <button
-            className={`px-3 py-1 text-sm rounded-md ${
-              graphDepth === 1
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            disabled={loading}
-            onClick={() => handleDepthChange(1)}
-          >
-            Direct Connections
-          </button>
-          <button
-            className={`px-3 py-1 text-sm rounded-md ${
-              graphDepth === 2
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            disabled={loading}
-            onClick={() => handleDepthChange(2)}
-          >
-            All Connections
-          </button>
-        </div>
-
         <div className="flex justify-center items-center h-60">
           <div className="flex flex-col items-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-2"></div>
@@ -149,47 +109,21 @@ const SkillGraphContainer: React.FC<SkillGraphContainerProps> = ({
     <div className="bg-white p-4 rounded-lg shadow">
       <h3 className="text-lg font-medium mb-2">Skill Relationship Graph</h3>
 
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex space-x-2">
-          <button
-            className={`px-3 py-1 text-sm rounded-md ${
-              graphDepth === 1
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-            disabled={loading}
-            onClick={() => handleDepthChange(1)}
-          >
-            Direct Connections
-          </button>
-          <button
-            className={`px-3 py-1 text-sm rounded-md ${
-              graphDepth === 2
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-            disabled={loading}
-            onClick={() => handleDepthChange(2)}
-          >
-            All Connections
-          </button>
-        </div>
-
+      <div className="flex justify-end mb-4">
         <div className="text-xs text-gray-500">
           {graphData.nodes.length} skills · {graphData.edges.length} connections
         </div>
       </div>
 
-      <SkillGraph
-        data={graphData}
+      <NetworkGraph
+        skills={graphData.nodes}
+        relationships={graphData.edges}
         width={width}
         height={height}
-        highlightedNodeId={selectedNodeId}
-        onNodeClick={handleNodeClick}
-        currentDepth={graphDepth}
+        showLabels={true}
       />
       <div className="mt-4 text-sm text-gray-500">
-        <p>Click on a skill node to explore its relationships.</p>
+        <p>Click on a skill node to explore related skills.</p>
       </div>
     </div>
   );

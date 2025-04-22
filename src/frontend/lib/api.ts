@@ -270,11 +270,16 @@ export const apiClient = {
     ).then((res) => res.json()),
 
   // Skill graph data
-  getSkillGraphData: (skillId: string, depth = 2): Promise<SkillGraphData> =>
-    fetch(`${API_BASE_URL}/graph/skill/${skillId}?depth=${depth}`).then(
-      (res) => {
-        if (!res.ok) throw new Error("Failed to fetch skill graph data");
-        return res.json();
-      }
-    ),
+  getSkillGraphData: (skillId: string): Promise<SkillGraphData> =>
+    fetch(`${API_BASE_URL}/graph/skill/${skillId}`).then((res) => {
+      if (!res.ok) throw new Error("Failed to fetch skill graph data");
+      return res.json();
+    }),
+
+  // Get complete skills network for visualization
+  getSkillsNetwork: (): Promise<SkillGraphData> =>
+    fetch(`${API_BASE_URL}/graph/skills-network`).then((res) => {
+      if (!res.ok) throw new Error("Failed to fetch skills network");
+      return res.json();
+    }),
 };

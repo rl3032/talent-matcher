@@ -22,7 +22,7 @@ This is the frontend application for the Talent Matcher system, a platform that 
 1. Clone the repository
 2. Navigate to the frontend directory:
    ```
-   cd frontend
+   cd src/frontend
    ```
 3. Install dependencies:
    ```

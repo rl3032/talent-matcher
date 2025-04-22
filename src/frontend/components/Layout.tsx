@@ -53,7 +53,7 @@ export default function Layout({ children }: LayoutProps) {
                     </Link>
                   )}
                 <Link
-                  href="/skills"
+                  href="/skills/library"
                   className={`px-3 py-2 rounded-md text-sm font-medium ${
                     isActive("/skills")
                       ? "bg-blue-100 text-blue-700"
