@@ -3,6 +3,15 @@ Talent Matcher API
 This module provides API endpoints for the talent matching system.
 """
 
+# ======================================================================
+# ===== DEPRECATION NOTICE =============================================
+# ======================================================================
+# This legacy API is deprecated and will be removed in a future version.
+# Please use the new backend API located in src/backend/ instead.
+# The new backend provides improved architecture, better performance,
+# and enhanced maintainability.
+# ======================================================================
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from src.knowledge_graph.model import KnowledgeGraph
@@ -561,6 +570,7 @@ def get_all_candidates():
         })
 
 @app.route('/api/jobs/<job_id>', methods=['GET'])
+@jwt_required()
 def get_job(job_id):
     """Get a specific job by ID with comprehensive details and required skills."""
     with kg.driver.session() as session:
@@ -1173,9 +1183,9 @@ def generate_embeddings():
 @jwt_required()
 def create_job():
     """Create a new job posting."""
-    # Check if user is a hiring manager
-    if current_user.role != 'hiring_manager':
-        return jsonify({"error": "Only hiring managers can post jobs"}), 403
+    # Check if user is a hiring manager or admin
+    if current_user.role != 'hiring_manager' and current_user.role != 'admin':
+        return jsonify({"error": "Only hiring managers and admins can post jobs"}), 403
     
     data = request.json
     

@@ -16,6 +16,22 @@ Talent Matcher is a comprehensive skill-based job matching platform that uses gr
 - **Complete CRUD Operations**: Create, read, update, and delete functionality for resumes and job postings
 - **User Authentication**: JWT-based authentication system with secure password handling
 
+## Backend Architecture
+
+The backend has been refactored to follow a layered architecture for better maintainability, testability, and scalability:
+
+- **Controller Layer**: Handles HTTP requests and responses
+- **Service Layer**: Contains business logic and orchestrates operations
+- **Repository Layer**: Manages data access and persistence
+- **Model Layer**: Defines data structures and domain objects
+
+This architecture provides:
+
+- Clear separation of concerns
+- Improved testability through dependency injection
+- Better maintainability with modular components
+- Enhanced error handling across layers
+
 ## Tech Stack
 
 ### Backend
@@ -75,7 +91,7 @@ Talent Matcher is a comprehensive skill-based job matching platform that uses gr
 5. Start the backend server
 
    ```bash
-   python src/api/app.py
+   python run_backend.py
    ```
 
 6. Start the frontend development server
@@ -86,6 +102,38 @@ Talent Matcher is a comprehensive skill-based job matching platform that uses gr
    ```
 
 7. Open your browser and navigate to `http://localhost:3000`
+
+## Testing
+
+The project includes comprehensive unit and integration tests for the backend.
+
+### Running Tests
+
+To run all tests and generate a coverage report:
+
+```bash
+# Run all tests
+python run_tests.py
+```
+
+This will run both unit tests and integration tests and generate a coverage report.
+
+### Test Structure
+
+- `/tests`: All test files
+  - `/unit`: Unit tests for individual components
+    - `/backend`: Backend unit tests
+      - `/models`: Tests for data models
+      - `/repositories`: Tests for database repositories
+      - `/routes`: Tests for API routes
+      - `/services`: Tests for service layer
+      - `/utils`: Tests for utility functions
+  - `/integration`: Integration tests
+    - Tests for service interactions and API workflows
+
+### Coverage Reports
+
+After running tests, a coverage report will be displayed in the console and an HTML coverage report will be generated in the `coverage_html` directory.
 
 ## User Roles
 
@@ -98,16 +146,19 @@ Talent Matcher supports three user roles, each with specific permissions:
 ## Project Structure
 
 - `/src`: All source code
-  - `/api`: Flask API endpoints
-  - `/knowledge_graph`: Neo4j graph database interaction
-  - `/data_generation`: Data generators for sample data
-  - `/etl`: Data loading utilities
+  - `/backend`: Flask API and backend services (new architecture)
+    - `/models`: Data models
+    - `/repositories`: Data access layer
+    - `/routes`: API endpoints
+    - `/services`: Business logic
+    - `/utils`: Utility functions
+  - `/api`: Deprecated legacy API (will be removed in future versions)
   - `/frontend`: Next.js/React frontend application
     - `/app`: Next.js application routes
     - `/components`: Reusable React components
     - `/lib`: Utility functions and API client
+- `/tests`: Test files
 - `/data`: Sample data and schemas
-- `/tests`: Backend tests
 
 ## License
 
