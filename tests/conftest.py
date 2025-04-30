@@ -7,7 +7,7 @@ import os
 import sys
 import pytest
 from dotenv import load_dotenv
-from src.knowledge_graph.model import KnowledgeGraph
+from src.backend.services.graph_service import GraphService
 
 # Load environment variables for testing
 load_dotenv()
@@ -21,7 +21,7 @@ def kg_connection():
     password = os.getenv("NEO4J_PASSWORD", "password")
     
     # Create connection
-    kg = KnowledgeGraph(uri, user, password)
+    kg = GraphService(uri, user, password)
     kg.connect()
     
     # Return the connection for test use
