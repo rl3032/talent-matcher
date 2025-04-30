@@ -1,4 +1,13 @@
+#!/usr/bin/env python
+"""
+Data Generation Script for Talent Matcher
+
+This script generates synthetic resume and job description datasets for
+development, testing, and demonstration purposes.
+"""
+
 import argparse
+import sys
 from pathlib import Path
 from src.data_generation.generators import ResumeGenerator, JobGenerator
 
@@ -14,7 +23,7 @@ def main():
     args = parser.parse_args()
     
     # Create output directory if it doesn't exist
-    output_path = Path(__file__).parent.parent / args.output_dir
+    output_path = Path("data") / args.output_dir
     output_path.mkdir(parents=True, exist_ok=True)
     
     # Generate resumes if requested
@@ -32,6 +41,7 @@ def main():
         job_generator.create_combined_dataset("data/job_dataset.json")
     
     print("Dataset generation complete!")
+    return 0
 
 if __name__ == "__main__":
-    main() 
+    sys.exit(main()) 
