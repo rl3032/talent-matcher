@@ -33,17 +33,14 @@ export default function CareerInsightsPage() {
     const fetchMatchingJobs = async () => {
       if (user?.profile_id) {
         try {
-          const response = await fetch(
-            `/api/candidates/${user.profile_id}/jobs/enhanced`
+          const data = await apiClient.getCandidateMatchesEnhanced(
+            user.profile_id
           );
-          if (response.ok) {
-            const data = await response.json();
-            setMatchingJobs(data || []);
+          setMatchingJobs(data || []);
 
-            // Select the first job by default if available
-            if (data && data.length > 0) {
-              setSelectedJobId(data[0].job_id);
-            }
+          // Select the first job by default if available
+          if (data && data.length > 0) {
+            setSelectedJobId(data[0].job_id);
           }
         } catch (error) {
           console.error("Error fetching matching jobs:", error);

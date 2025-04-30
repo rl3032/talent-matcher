@@ -105,11 +105,16 @@ export default function NetworkGraph({
       .append("circle")
       .attr("r", showLabels ? 6 : 5) // Slightly larger when showing labels
       .attr("fill", (d) => {
-        const nodeType = d.type.toLowerCase();
-        if (nodeType.includes("technical")) return "#4299E1"; // Blue
-        if (nodeType.includes("soft")) return "#48BB78"; // Green
-        if (nodeType.includes("domain")) return "#ED8936"; // Orange
-        return "#A0AEC0"; // Gray
+        // Use category field for coloring
+        const category = d.category || "";
+        if (category.toLowerCase().includes("technical")) return "#4299E1"; // Blue
+        if (category.toLowerCase().includes("soft")) return "#48BB78"; // Green
+        if (category.toLowerCase().includes("domain")) return "#ED8936"; // Orange
+        if (category.toLowerCase().includes("tool")) return "#9F7AEA"; // Purple
+        if (category.toLowerCase().includes("framework")) return "#F56565"; // Red
+        if (category.toLowerCase().includes("language")) return "#38B2AC"; // Teal
+        if (category.toLowerCase().includes("database")) return "#667EEA"; // Indigo
+        return "#A0AEC0"; // Gray default
       })
       .attr("stroke", "#fff")
       .attr("stroke-width", 1.5);
@@ -266,7 +271,7 @@ export default function NetworkGraph({
         >
           <div className="font-semibold">{hoveredNode.name}</div>
           <div className="text-xs mt-1">
-            Category: {hoveredNode.type || "General"}
+            Category: {hoveredNode.category || "Unknown"}
             <br />
             ID: {hoveredNode.id}
           </div>

@@ -31,13 +31,112 @@ export default function JobDetailPage() {
       .join(" ");
   };
 
+  // Helper function to safely parse JSON strings
+  const parseJsonString = (
+    jsonString: string | string[] | undefined
+  ): string[] => {
+    if (!jsonString) return [];
+
+    // If it's already an array, return it
+    if (Array.isArray(jsonString)) return jsonString;
+
+    // If it's a string, try different parsing approaches
+    if (typeof jsonString === "string") {
+      // 1. First try standard JSON parsing if it looks like JSON
+      if (jsonString.trim().startsWith("[") || jsonString.includes('"')) {
+        try {
+          const parsed = JSON.parse(jsonString);
+          return Array.isArray(parsed) ? parsed : [parsed];
+        } catch (e) {
+          // Error handling without logging
+        }
+      }
+
+      // 2. Try to fix malformed JSON and parse again
+      try {
+        // Clean up potential representation issues
+        const cleanJson = jsonString
+          .replace(/'/g, '"') // Replace single quotes with double quotes
+          .replace(/([a-zA-Z0-9_]+):/g, '"$1":') // Add quotes around keys
+          .replace(/\\/g, "\\\\"); // Escape backslashes
+
+        if (cleanJson.trim().startsWith("[")) {
+          const parsed = JSON.parse(cleanJson);
+          return Array.isArray(parsed) ? parsed : [parsed];
+        }
+      } catch (e) {
+        // Error handling without logging
+      }
+
+      // 3. If it contains newlines, split by newlines
+      if (jsonString.includes("\n")) {
+        return jsonString
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+      }
+
+      // 4. If it contains commas, try split by commas (common array representation)
+      if (jsonString.includes(",")) {
+        return jsonString
+          .split(",")
+          .map((item) => item.trim().replace(/^["'](.*)["']$/, "$1")) // Remove quotes
+          .filter((item) => item.length > 0);
+      }
+    }
+
+    // If all parsing attempts fail, return the string as a single item array
+    return [jsonString];
+  };
+
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
         setLoading(true);
         // Fetch job details
         const jobData = await apiClient.getJob(job_id as string);
-        setJob(jobData);
+
+        // Handle nested array case: if we have something like ["[\"item1\",\"item2\"]"]
+        let responsibilities = jobData.responsibilities;
+        let qualifications = jobData.qualifications;
+
+        // Check for double-encoded arrays
+        if (
+          Array.isArray(responsibilities) &&
+          responsibilities.length === 1 &&
+          typeof responsibilities[0] === "string" &&
+          responsibilities[0].startsWith("[")
+        ) {
+          try {
+            // Try to parse the inner JSON string
+            responsibilities = JSON.parse(responsibilities[0]);
+          } catch (e) {
+            // Error handling without console.log
+          }
+        }
+
+        if (
+          Array.isArray(qualifications) &&
+          qualifications.length === 1 &&
+          typeof qualifications[0] === "string" &&
+          qualifications[0].startsWith("[")
+        ) {
+          try {
+            // Try to parse the inner JSON string
+            qualifications = JSON.parse(qualifications[0]);
+          } catch (e) {
+            // Error handling without console.log
+          }
+        }
+
+        // Parse responsibilities and qualifications if they are JSON strings
+        const parsedJob = {
+          ...jobData,
+          responsibilities: parseJsonString(responsibilities),
+          qualifications: parseJsonString(qualifications),
+        };
+
+        setJob(parsedJob);
 
         // Check if the current user is a hiring manager or admin
         if (user && (user.role === "hiring_manager" || user.role === "admin")) {
@@ -105,10 +204,17 @@ export default function JobDetailPage() {
         <div className="text-center py-20">
           <p className="text-red-500">{error || "Job not found"}</p>
           <Link
-            href="/jobs"
+            href={
+              user && (user.role === "hiring_manager" || user.role === "admin")
+                ? "/dashboard/hiring"
+                : "/jobs"
+            }
             className="mt-4 inline-block text-blue-600 hover:text-blue-800"
           >
-            ← Back to Jobs
+            ←{" "}
+            {user && (user.role === "hiring_manager" || user.role === "admin")
+              ? "Back to Dashboard"
+              : "Back to Jobs"}
           </Link>
         </div>
       </Layout>
@@ -120,10 +226,17 @@ export default function JobDetailPage() {
       <div className="mb-8">
         {/* Back link */}
         <Link
-          href="/jobs"
+          href={
+            user && (user.role === "hiring_manager" || user.role === "admin")
+              ? "/dashboard/hiring"
+              : "/jobs"
+          }
           className="text-blue-600 hover:text-blue-800 mb-6 inline-block"
         >
-          ← Back to Jobs
+          ←{" "}
+          {user && (user.role === "hiring_manager" || user.role === "admin")
+            ? "Back to Dashboard"
+            : "Back to Jobs"}
         </Link>
 
         {/* Job header */}
@@ -160,7 +273,7 @@ export default function JobDetailPage() {
         )}
 
         {/* Responsibilities section */}
-        {job.responsibilities && Array.isArray(job.responsibilities) && (
+        {job.responsibilities && (
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6">
               <h2 className="text-xl font-bold text-gray-900">
@@ -168,13 +281,18 @@ export default function JobDetailPage() {
               </h2>
             </div>
             <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-              {job.responsibilities.length > 0 ? (
+              {Array.isArray(job.responsibilities) &&
+              job.responsibilities.length > 0 ? (
                 <ul className="list-disc pl-5 space-y-2">
                   {job.responsibilities.map((responsibility, index) => (
                     <li key={index} className="text-gray-700">
-                      {responsibility}
+                      {responsibility.toString()}
                     </li>
                   ))}
+                </ul>
+              ) : typeof job.responsibilities === "string" ? (
+                <ul className="list-disc pl-5 space-y-2">
+                  <li className="text-gray-700">{job.responsibilities}</li>
                 </ul>
               ) : (
                 <p className="text-gray-500">
@@ -186,7 +304,7 @@ export default function JobDetailPage() {
         )}
 
         {/* Qualifications section */}
-        {job.qualifications && Array.isArray(job.qualifications) && (
+        {job.qualifications && (
           <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:px-6">
               <h2 className="text-xl font-bold text-gray-900">
@@ -194,13 +312,18 @@ export default function JobDetailPage() {
               </h2>
             </div>
             <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
-              {job.qualifications.length > 0 ? (
+              {Array.isArray(job.qualifications) &&
+              job.qualifications.length > 0 ? (
                 <ul className="list-disc pl-5 space-y-2">
                   {job.qualifications.map((qualification, index) => (
                     <li key={index} className="text-gray-700">
-                      {qualification}
+                      {qualification.toString()}
                     </li>
                   ))}
+                </ul>
+              ) : typeof job.qualifications === "string" ? (
+                <ul className="list-disc pl-5 space-y-2">
+                  <li className="text-gray-700">{job.qualifications}</li>
                 </ul>
               ) : (
                 <p className="text-gray-500">

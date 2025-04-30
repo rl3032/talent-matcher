@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { apiClient } from "../lib/api";
 import NetworkGraph from "./NetworkGraph";
 import { SkillGraphData } from "../types";
@@ -20,6 +20,8 @@ const SkillGraphContainer: React.FC<SkillGraphContainerProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string>(skillId);
+  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchGraphData = async () => {
@@ -55,6 +57,17 @@ const SkillGraphContainer: React.FC<SkillGraphContainerProps> = ({
         }
 
         setGraphData(data);
+
+        // Extract unique categories
+        if (data.nodes && data.nodes.length > 0) {
+          const categories = new Set<string>();
+          data.nodes.forEach((node) => {
+            if (node.category) {
+              categories.add(node.category);
+            }
+          });
+          setCategoryFilters(Array.from(categories).sort());
+        }
       } catch (err) {
         console.error("Error fetching skill graph data:", err);
         setError("Failed to load skill graph. Please try again later.");
@@ -72,6 +85,56 @@ const SkillGraphContainer: React.FC<SkillGraphContainerProps> = ({
       setSelectedNodeId(nodeId);
     }
   };
+
+  // Filter nodes based on selected categories
+  const filteredGraphData = useMemo(() => {
+    if (!graphData) return null;
+
+    // If no categories selected, show all
+    if (selectedCategories.length === 0) return graphData;
+
+    // Filter nodes by selected categories
+    const filteredNodes = graphData.nodes.filter((node) =>
+      selectedCategories.includes(node.category || "")
+    );
+
+    // Get the IDs of filtered nodes
+    const nodeIds = new Set(filteredNodes.map((node) => node.id));
+
+    // Filter edges where both source and target are in filtered nodes
+    const filteredEdges = graphData.edges.filter(
+      (edge) => nodeIds.has(edge.source) && nodeIds.has(edge.target)
+    );
+
+    return {
+      nodes: filteredNodes,
+      edges: filteredEdges,
+    };
+  }, [graphData, selectedCategories]);
+
+  // Toggle category selection
+  const toggleCategory = (category: string) => {
+    setSelectedCategories((prev) => {
+      if (prev.includes(category)) {
+        return prev.filter((c) => c !== category);
+      } else {
+        return [...prev, category];
+      }
+    });
+  };
+
+  // Get category counts for display
+  const getCategoryCounts = useMemo(() => {
+    if (!graphData || !graphData.nodes) return {};
+
+    const counts: Record<string, number> = {};
+    graphData.nodes.forEach((node) => {
+      const category = node.category || "Uncategorized";
+      counts[category] = (counts[category] || 0) + 1;
+    });
+
+    return counts;
+  }, [graphData]);
 
   if (loading) {
     return (
@@ -105,19 +168,47 @@ const SkillGraphContainer: React.FC<SkillGraphContainerProps> = ({
     );
   }
 
+  const dataToDisplay = filteredGraphData || graphData;
+
   return (
     <div className="bg-white p-4 rounded-lg shadow">
       <h3 className="text-lg font-medium mb-2">Skill Relationship Graph</h3>
 
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-between mb-4">
         <div className="text-xs text-gray-500">
-          {graphData.nodes.length} skills · {graphData.edges.length} connections
+          {dataToDisplay.nodes.length} skills · {dataToDisplay.edges.length}{" "}
+          connections
         </div>
+
+        {categoryFilters.length > 0 && (
+          <div className="flex items-center">
+            <span className="text-xs text-gray-500 mr-2">Filter:</span>
+            <div className="flex flex-wrap gap-1">
+              {categoryFilters.map((category) => {
+                const count = getCategoryCounts[category] || 0;
+                const isSelected = selectedCategories.includes(category);
+                return (
+                  <button
+                    key={category}
+                    onClick={() => toggleCategory(category)}
+                    className={`px-2 py-0.5 text-xs rounded ${
+                      isSelected
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    {category} ({count})
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       <NetworkGraph
-        skills={graphData.nodes}
-        relationships={graphData.edges}
+        skills={dataToDisplay.nodes}
+        relationships={dataToDisplay.edges}
         width={width}
         height={height}
         showLabels={true}

@@ -5,6 +5,7 @@ export interface Job {
   location: string;
   domain: string;
   description?: string;
+  summary?: string;
   responsibilities?: string[];
   qualifications?: string[];
   salary_range?: string;
@@ -66,11 +67,13 @@ export interface JobSkill extends Skill {
   relationship_type: string;
   proficiency: string;
   importance: number;
+  is_primary?: boolean;
 }
 
 export interface CandidateSkill extends Skill {
   level: number;
   years: number;
+  skill_type?: "core" | "secondary";
 }
 
 export interface MatchResult {
@@ -104,6 +107,7 @@ export interface GraphNode {
   id: string;
   name: string;
   type: string;
+  category?: string;
 }
 
 export interface GraphEdge {

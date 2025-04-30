@@ -5,6 +5,7 @@ import { useAuth } from "../../../lib/AuthContext";
 import { useRouter } from "next/navigation";
 import Layout from "../../../components/Layout";
 import Link from "next/link";
+import { apiClient } from "../../../lib/api";
 
 interface Job {
   job_id: string;
@@ -32,13 +33,10 @@ export default function CandidateDashboard() {
     const fetchMatchingJobs = async () => {
       if (user?.profile_id) {
         try {
-          const response = await fetch(
-            `/api/candidates/${user.profile_id}/jobs/enhanced`
+          const data = await apiClient.getCandidateMatchesEnhanced(
+            user.profile_id
           );
-          if (response.ok) {
-            const data = await response.json();
-            setMatchingJobs(data || []);
-          }
+          setMatchingJobs(data || []);
         } catch (error) {
           console.error("Error fetching matching jobs:", error);
         }

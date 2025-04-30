@@ -8,7 +8,8 @@ import json
 import os
 import glob
 from typing import Dict, List, Optional, Any, Tuple
-from src.knowledge_graph.model import KnowledgeGraph
+from src.backend.services.graph_service import GraphService
+from src.backend.services.skill_service import SkillService
 from src.data_generation.skill_taxonomy import SKILLS
 from src.config import DATA_DIR
 
@@ -16,9 +17,10 @@ from src.config import DATA_DIR
 class ETLPipeline:
     """ETL Pipeline for Knowledge Graph data."""
     
-    def __init__(self, kg: KnowledgeGraph, data_dir: str = DATA_DIR):
+    def __init__(self, kg: GraphService, data_dir: str = DATA_DIR):
         """Initialize ETL Pipeline with knowledge graph and data directory."""
         self.kg = kg
+        self.skill_service = SkillService.get_instance(kg)
         self.data_dir = data_dir
         
     def extract_skills(self) -> Dict[str, Dict]:
@@ -113,9 +115,9 @@ class ETLPipeline:
                 job_skill_relationships.append({
                     "job_id": job["job_id"],
                     "skill_id": skill["skill_id"],
-                    "level": skill.get("importance", 8) * 10,  # Convert to 0-10 scale
+                    "importance": skill.get("importance", 0.8),  # Keep as decimal value
                     "is_primary": True,
-                    "proficiency": skill.get("proficiency", "advanced")
+                    "proficiency": skill.get("proficiency", "advanced")  # Keep as string
                 })
                 
             # Extract secondary skills
@@ -123,9 +125,9 @@ class ETLPipeline:
                 job_skill_relationships.append({
                     "job_id": job["job_id"],
                     "skill_id": skill["skill_id"],
-                    "level": skill.get("importance", 5) * 10,  # Convert to 0-10 scale
+                    "importance": skill.get("importance", 0.5),  # Keep as decimal value
                     "is_primary": False,
-                    "proficiency": skill.get("proficiency", "intermediate")
+                    "proficiency": skill.get("proficiency", "intermediate")  # Keep as string
                 })
                 
             # Extract skill relationships
@@ -200,8 +202,8 @@ class ETLPipeline:
                 candidate_skill_relationships.append({
                     "resume_id": resume["resume_id"],
                     "skill_id": skill["skill_id"],
-                    "level": proficiency_value,
-                    "years": skill.get("experience_years", 0),
+                    "proficiency": proficiency_value,
+                    "experience_years": skill.get("experience_years", 0),
                     "is_core": True
                 })
                 
@@ -216,8 +218,8 @@ class ETLPipeline:
                 candidate_skill_relationships.append({
                     "resume_id": resume["resume_id"],
                     "skill_id": skill["skill_id"],
-                    "level": proficiency_value,
-                    "years": skill.get("experience_years", 0),
+                    "proficiency": proficiency_value,
+                    "experience_years": skill.get("experience_years", 0),
                     "is_core": False
                 })
                 
@@ -235,26 +237,26 @@ class ETLPipeline:
         
         return candidate_nodes, candidate_skill_relationships, skill_relationships, experience_data
     
-    def _get_proficiency_value(self, proficiency: str) -> float:
-        """Convert string proficiency to numeric value."""
+    def _get_proficiency_value(self, proficiency: str) -> str:
+        """Convert proficiency to standardized string value."""
         proficiency_map = {
-            "beginner": 5.0,
-            "intermediate": 7.0,
-            "advanced": 8.5,
-            "expert": 10.0
+            "beginner": "beginner",
+            "intermediate": "intermediate",
+            "advanced": "advanced",
+            "expert": "expert"
         }
-        # Default to a middle value if proficiency not recognized
-        return proficiency_map.get(proficiency.lower(), 5.0)
+        # Default to beginner if proficiency not recognized
+        return proficiency_map.get(proficiency.lower(), "beginner")
     
     def load_skills(self, skill_nodes: List[Dict], skill_relationships: List[Dict]) -> None:
         """Load skills into knowledge graph."""
         print(f"Loading {len(skill_nodes)} skills...")
         for skill in skill_nodes:
-            self.kg.add_skill(skill)
+            self.skill_service.create_skill(skill)
             
         print(f"Loading {len(skill_relationships)} skill relationships...")
         for rel in skill_relationships:
-            self.kg.add_skill_relationship(
+            self.kg.skill_repository.add_skill_relationship(
                 rel["source"],
                 rel["target"],
                 rel["type"],
@@ -265,32 +267,32 @@ class ETLPipeline:
         """Load jobs into knowledge graph."""
         print(f"Loading {len(job_nodes)} jobs...")
         for job in job_nodes:
-            self.kg.add_job(job)
+            self.kg.job_repository.add_job(job)
             
         print(f"Loading {len(job_skill_relationships)} job skill relationships...")
         for rel in job_skill_relationships:
-            self.kg.add_job_skill(
+            self.kg.job_repository.add_job_skill(
                 rel["job_id"],
                 rel["skill_id"],
-                proficiency=rel.get("proficiency", "intermediate"),
-                importance=rel["level"],
-                is_primary=rel["is_primary"]
+                rel["proficiency"],
+                rel["importance"],
+                rel["is_primary"]
             )
     
     def load_candidates(self, candidate_nodes: List[Dict], candidate_skill_rels: List[Dict]):
         """Load candidate data into the knowledge graph."""
         print(f"Loading {len(candidate_nodes)} candidates into knowledge graph...")
         for node in candidate_nodes:
-            self.kg.add_candidate(node)
+            self.kg.candidate_repository.add_candidate(node)
             
         print(f"Loading {len(candidate_skill_rels)} candidate-skill relationships...")
         for rel in candidate_skill_rels:
-            self.kg.add_candidate_skill(
+            self.kg.candidate_repository.add_candidate_skill(
                 rel["resume_id"],
                 rel["skill_id"],
-                proficiency=rel["level"],
-                experience_years=rel.get("years", 0),
-                is_core=rel["is_core"]
+                rel["proficiency"],
+                rel["experience_years"],
+                rel["is_core"]
             )
     
     def load_experiences(self, experience_data: List[Dict]):
@@ -349,22 +351,6 @@ class ETLPipeline:
                             })
         print("Experience data loading completed.")
     
-    def clear_database(self, force: bool = False) -> bool:
-        """Clear all data from the Neo4j database."""
-        if not force:
-            # Ask for confirmation before clearing
-            confirm = input("This will delete ALL data from the Neo4j database. Are you sure? (y/n): ")
-            if confirm.lower() != 'y':
-                print("Operation cancelled.")
-                return False
-        
-        print("Clearing database (this might take a while)...")
-        with self.kg.driver.session() as session:
-            session.run("MATCH (n) DETACH DELETE n")
-        
-        print("Database cleared successfully!")
-        return True
-    
     def run_pipeline(self, clear_db: bool = True, force: bool = False, generate_embeddings: bool = False) -> bool:
         """Run the complete ETL pipeline.
         
@@ -378,8 +364,9 @@ class ETLPipeline:
         """
         try:
             # Step 1: Clear database if requested
-            if clear_db and not self.clear_database(force):
-                return False
+            if clear_db:
+                if not self.kg.clear_database(force):
+                    return False
                 
             # Step 2: Create constraints
             self.kg.create_constraints()
@@ -425,8 +412,10 @@ class ETLPipeline:
 def load_skills(kg):
     """Load skills taxonomy into the knowledge graph."""
     print("Loading skills taxonomy...")
+    skill_service = SkillService.get_instance(kg)
+    
     for skill_id, skill_data in SKILLS.items():
-        kg.add_skill({
+        skill_service.create_skill({
             "skill_id": skill_id,
             "name": skill_data["name"],
             "category": skill_data["category"],
@@ -437,131 +426,217 @@ def load_skills(kg):
     for skill_id, skill_data in SKILLS.items():
         for rel_type, related_skills in skill_data.get("relationships", {}).items():
             for target_skill_id in related_skills:
-                kg.add_skill_relationship(skill_id, target_skill_id, rel_type)
-                
-    print(f"Loaded {len(SKILLS)} skills with relationships")
+                # Use the skill repository directly since the relationship method isn't exposed in SkillService
+                kg.skill_repository.add_skill_relationship(skill_id, target_skill_id, rel_type)
+    
+    print(f"Loaded {len(SKILLS)} skills with relationships.")
 
 def load_jobs(kg, job_file_path):
-    """Load job data into the knowledge graph."""
+    """Load jobs from a JSON file into the knowledge graph."""
     print(f"Loading jobs from {job_file_path}")
-    with open(job_file_path, 'r') as f:
-        job_data = json.load(f)
+    
+    try:
+        with open(job_file_path, 'r') as f:
+            data = json.load(f)
+            
+        # Handle different formats
+        if isinstance(data, dict) and "jobs" in data:
+            jobs = data["jobs"]
+        elif isinstance(data, list):
+            jobs = data
+        elif isinstance(data, dict):
+            jobs = [data]  # Single job
+        else:
+            print(f"Error: Unexpected format in {job_file_path}")
+            return
+            
+        for job in jobs:
+            # Add job node
+            kg.job_repository.add_job(job)
+            
+            # Add skill relationships
+            if "skills" in job:
+                skills = job["skills"]
+                # Handle primary skills
+                for skill in skills.get("primary", []):
+                    kg.job_repository.add_job_skill(
+                        job["job_id"],
+                        skill["skill_id"],
+                        skill.get("proficiency", "intermediate"),
+                        skill.get("importance", 0.8),
+                        True  # is_primary
+                    )
+                    
+                # Handle secondary skills
+                for skill in skills.get("secondary", []):
+                    kg.job_repository.add_job_skill(
+                        job["job_id"],
+                        skill["skill_id"],
+                        skill.get("proficiency", "beginner"),
+                        skill.get("importance", 0.5),
+                        False  # is_primary
+                    )
+            
+            # Add skill relationship nodes
+            if "skill_relationships" in job:
+                for rel in job["skill_relationships"]:
+                    kg.skill_repository.add_skill_relationship(
+                        rel["source"],
+                        rel["target"],
+                        rel["type"],
+                        rel.get("weight", 1.0)
+                    )
+                    
+        print(f"Loaded {len(jobs)} jobs")
+                
+    except Exception as e:
+        print(f"Error loading jobs: {str(e)}")
         
-    job_count = 0
-    for job in job_data.get("jobs", []):
-        kg.add_job(job)
+def load_resumes(kg, resume_file_path):
+    """Load resume data into the knowledge graph."""
+    print(f"Loading resumes from {resume_file_path}")
+    
+    try:
+        with open(resume_file_path, 'r') as f:
+            data = json.load(f)
+            
+        # Determine the format of the data
+        if isinstance(data, dict) and "resumes" in data:
+            resumes = data["resumes"]
+        elif isinstance(data, list):
+            resumes = data
+        elif isinstance(data, dict):
+            resumes = [data]  # Single resume
+        else:
+            print(f"Error: Unexpected format in {resume_file_path}")
+            return
+            
+        # Process each resume
+        for resume in resumes:
+            load_single_resume(kg, resume)
+            
+        print(f"Loaded {len(resumes)} resumes")
+                
+    except Exception as e:
+        print(f"Error loading resumes: {str(e)}")
         
-        # Add primary skills
-        for skill in job.get("skills", {}).get("primary", []):
-            importance_value = skill.get("importance", 0.8) * 10  # Scale to 0-10
-            kg.add_job_skill(
-                job["job_id"],
+def load_single_resume(kg, resume_data):
+    """Load a single resume into the knowledge graph."""
+    # Add the candidate node
+    kg.candidate_repository.add_candidate(resume_data)
+    
+    # Add skill relationships
+    if "skills" in resume_data:
+        skills = resume_data["skills"]
+        # Handle core skills
+        for skill in skills.get("core", []):
+            # Handle numeric and string proficiency
+            proficiency = skill.get("proficiency", 0)
+            if isinstance(proficiency, (int, float)):
+                if proficiency >= 8:
+                    proficiency_str = "advanced"
+                elif proficiency >= 5:
+                    proficiency_str = "intermediate"
+                else:
+                    proficiency_str = "beginner"
+            else:
+                proficiency_str = str(proficiency).lower()
+                
+            kg.candidate_repository.add_candidate_skill(
+                resume_data["resume_id"],
                 skill["skill_id"],
-                proficiency=skill.get("proficiency", "advanced"),
-                importance=importance_value,
-                is_primary=True
+                proficiency_str,
+                skill.get("experience_years", 0),
+                True  # is_core
             )
             
-        # Add secondary skills
-        for skill in job.get("skills", {}).get("secondary", []):
-            importance_value = skill.get("importance", 0.5) * 10  # Scale to 0-10
-            kg.add_job_skill(
-                job["job_id"],
+        # Handle secondary skills
+        for skill in skills.get("secondary", []):
+            # Handle numeric and string proficiency
+            proficiency = skill.get("proficiency", 0)
+            if isinstance(proficiency, (int, float)):
+                if proficiency >= 8:
+                    proficiency_str = "advanced"
+                elif proficiency >= 5:
+                    proficiency_str = "intermediate"
+                else:
+                    proficiency_str = "beginner"
+            else:
+                proficiency_str = str(proficiency).lower()
+                
+            kg.candidate_repository.add_candidate_skill(
+                resume_data["resume_id"],
                 skill["skill_id"],
-                proficiency=skill.get("proficiency", "intermediate"),
-                importance=importance_value,
-                is_primary=False
+                proficiency_str,
+                skill.get("experience_years", 0),
+                False  # is_core
             )
-            
-        # Add job-specific skill relationships
-        for rel in job.get("skill_relationships", []):
-            kg.add_skill_relationship(
+    
+    # Add skill relationship nodes if they exist
+    if "skill_relationships" in resume_data:
+        for rel in resume_data["skill_relationships"]:
+            kg.skill_repository.add_skill_relationship(
                 rel["source"],
                 rel["target"],
                 rel["type"],
                 rel.get("weight", 1.0)
             )
             
-        job_count += 1
-        
-    print(f"Loaded {job_count} jobs")
-    
-def load_resumes(kg, resume_file_path):
-    """Load resume data into the knowledge graph."""
-    print(f"Loading resumes from {resume_file_path}")
-    with open(resume_file_path, 'r') as f:
-        resume_data = json.load(f)
-        
-    if isinstance(resume_data, dict):
-        # Check if it's a dictionary with a 'resumes' key
-        if "resumes" in resume_data:
-            resume_count = 0
-            for resume in resume_data["resumes"]:
-                load_single_resume(kg, resume)
-                resume_count += 1
-            print(f"Loaded {resume_count} resumes")
-        else:
-            # Single resume
-            load_single_resume(kg, resume_data)
-            print("Loaded 1 resume")
-    else:
-        # List of resumes
-        resume_count = 0
-        for resume in resume_data:
-            load_single_resume(kg, resume)
-            resume_count += 1
-        print(f"Loaded {resume_count} resumes")
-        
-def load_single_resume(kg, resume_data):
-    """Load a single resume into the knowledge graph."""
-    kg.add_candidate(resume_data)
-    
-    # Add core skills
-    for skill in resume_data.get("skills", {}).get("core", []):
-        # Handle numeric proficiency directly or convert string proficiency
-        proficiency_value = skill.get("proficiency", 0)
-        if isinstance(proficiency_value, (int, float)):
-            proficiency_level = proficiency_value * 10  # Scale 0-10 to 0-100
-        else:
-            proficiency_level = skill.get("proficiency_level", 0.8) * 10
+    # Process work experience if it exists
+    if "experience" in resume_data and resume_data["experience"]:
+        for i, exp in enumerate(resume_data["experience"]):
+            # Create a unique ID for the experience
+            exp_id = f"{resume_data['resume_id']}_exp_{i}"
             
-        kg.add_candidate_skill(
-            resume_data["resume_id"],
-            skill["skill_id"],
-            proficiency=proficiency_level,
-            experience_years=skill.get("experience_years", 0),
-            is_core=True
-        )
-        
-    # Add secondary skills
-    for skill in resume_data.get("skills", {}).get("secondary", []):
-        # Handle numeric proficiency directly or convert string proficiency
-        proficiency_value = skill.get("proficiency", 0)
-        if isinstance(proficiency_value, (int, float)):
-            proficiency_level = proficiency_value * 10  # Scale 0-10 to 0-100
-        else:
-            proficiency_level = skill.get("proficiency_level", 0.5) * 10
-            
-        kg.add_candidate_skill(
-            resume_data["resume_id"],
-            skill["skill_id"],
-            proficiency=proficiency_level,
-            experience_years=skill.get("experience_years", 0),
-            is_core=False
-        )
-        
-    # Add candidate-specific skill relationships
-    for rel in resume_data.get("skill_relationships", []):
-        kg.add_skill_relationship(
-            rel["source"],
-            rel["target"],
-            rel["type"],
-            rel.get("weight", 1.0)
-        )
-        
-    # Add experience data if present
-    # The KnowledgeGraph class now handles this directly
-    # This will be used by the legacy functions
+            with kg.driver.session() as session:
+                # Create the experience node
+                session.run("""
+                    MERGE (e:Experience {exp_id: $exp_id})
+                    SET e.job_title = $job_title,
+                        e.company = $company,
+                        e.start_date = $start_date,
+                        e.end_date = $end_date,
+                        e.description = $description
+                """, {
+                    "exp_id": exp_id,
+                    "job_title": exp.get("job_title", ""),
+                    "company": exp.get("company", ""),
+                    "start_date": exp.get("start_date", ""),
+                    "end_date": exp.get("end_date", "Present"),
+                    "description": kg._process_text_list(exp.get("description", []))
+                })
+                
+                # Link the experience to the candidate
+                session.run("""
+                    MATCH (c:Candidate {resume_id: $resume_id})
+                    MATCH (e:Experience {exp_id: $exp_id})
+                    MERGE (c)-[r:HAS_EXPERIENCE]->(e)
+                """, {
+                    "resume_id": resume_data["resume_id"],
+                    "exp_id": exp_id
+                })
+                
+                # Process skills used in this experience if they exist
+                if "skills_used" in exp and exp["skills_used"]:
+                    for skill_name in exp["skills_used"]:
+                        # Try to find the skill by name
+                        skill_result = session.run("""
+                            MATCH (s:Skill)
+                            WHERE toLower(s.name) = toLower($skill_name)
+                            RETURN s.skill_id as skill_id
+                        """, {"skill_name": skill_name})
+                        
+                        # If skill found, create the relationship
+                        skill_record = skill_result.single()
+                        if skill_record:
+                            session.run("""
+                                MATCH (e:Experience {exp_id: $exp_id})
+                                MATCH (s:Skill {skill_id: $skill_id})
+                                MERGE (e)-[r:USED_SKILL]->(s)
+                            """, {
+                                "exp_id": exp_id,
+                                "skill_id": skill_record["skill_id"]
+                            })
 
 def load_directory(kg, directory_path):
     """Load all JSON files from a directory."""
@@ -575,160 +650,66 @@ def load_directory(kg, directory_path):
             load_single_resume(kg, json.load(open(file_path)))
             
 def initialize_knowledge_graph(data_dir=None):
-    """Initialize or connect to the knowledge graph.
+    """Initialize the knowledge graph.
+    
+    This function connects to the Neo4j database and sets up the knowledge graph.
     
     Args:
-        data_dir: Optional path to data directory.
+        data_dir: Optional path to data directory
         
     Returns:
-        The initialized KnowledgeGraph instance.
+        GraphService: Initialized knowledge graph
     """
-    # Initialize knowledge graph
-    kg = KnowledgeGraph()
-    kg.connect()
+    from src.backend.services.graph_service import GraphService
+    from src.config import NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD, DATA_DIR
     
-    # Create constraints for unique IDs
+    if data_dir is None:
+        data_dir = DATA_DIR
+        
+    # Initialize knowledge graph
+    print("Initializing knowledge graph...")
+    kg = GraphService(
+        uri=NEO4J_URI,
+        user=NEO4J_USER,
+        password=NEO4J_PASSWORD
+    )
+    
+    # Create constraints
     kg.create_constraints()
     
-    # Initialize User schema for authentication and user management
+    # Ensure user schema is set up
     kg.ensure_user_schema()
     
-    # Check if the graph is empty
+    # Check if the database is empty
     with kg.driver.session() as session:
-        result = session.run("MATCH (n) RETURN count(n) AS count")
-        count = result.single()["count"]
+        result = session.run("MATCH (n) RETURN count(n) as node_count")
+        node_count = result.single()["node_count"]
         
-    # If the graph is empty, load the data
-    if count == 0:
-        print("Knowledge graph is empty, loading data...")
-        pipeline = ETLPipeline(kg, data_dir or DATA_DIR)
-        pipeline.run_pipeline(clear_db=False)
+    if node_count == 0:
+        print("Knowledge graph is empty, loading sample data...")
+        # Setup ETL pipeline
+        pipeline = ETLPipeline(kg, data_dir=data_dir)
         
-        # Make sure User schema is created
-        kg.ensure_user_schema()
-        
-        # After loading initial data, create test accounts
-        create_test_accounts(kg)
+        try:
+            # Try to run the ETL pipeline
+            pipeline_successful = pipeline.run_pipeline(clear_db=False, generate_embeddings=True)
+            
+            # Only create test accounts if pipeline ran successfully
+            if pipeline_successful:
+                try:
+                    kg.create_test_accounts()
+                except Exception as e:
+                    print(f"Warning: Failed to create test accounts: {str(e)}")
+                    print("You may need to create accounts manually.")
+            else:
+                print("Warning: ETL pipeline did not complete successfully. Database may be incomplete.")
+        except Exception as e:
+            print(f"Error running ETL pipeline: {str(e)}")
+            print("Knowledge graph initialization may be incomplete.")
     else:
-        print(f"Knowledge graph already contains {count} nodes")
+        print(f"Knowledge graph already contains {node_count} nodes")
         
     return kg
-
-def create_test_accounts(kg):
-    """Create test admin, HR, and candidate accounts and link them to test data."""
-    from werkzeug.security import generate_password_hash
-    
-    # Import here to prevent circular imports
-    import sys
-    import os
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    
-    # Create User schema directly with Cypher instead of relying on the User class
-    with kg.driver.session() as session:
-        # Create unique constraint for User.email
-        try:
-            session.run("CREATE CONSTRAINT unique_user_email IF NOT EXISTS FOR (u:User) REQUIRE u.email IS UNIQUE")
-        except Exception as e:
-            print(f"Warning: Could not create constraint: {str(e)}")
-    
-    # Now import the User class
-    try:
-        from src.api.app import User
-    except ImportError:
-        try:
-            from api.app import User
-        except ImportError:
-            print("Warning: Could not import User class, creating users directly with Cypher")
-            User = None
-    
-    print("Creating test accounts...")
-    
-    # Create admin HR account
-    hr_email = "hr@example.com"
-    hr_password = generate_password_hash("password123")
-    hr_name = "Test HR Manager"
-    
-    # Create HR user directly with Cypher if User class is not available
-    if User is None:
-        with kg.driver.session() as session:
-            session.run("""
-                MERGE (u:User {email: $email})
-                SET u.password_hash = $password_hash,
-                    u.name = $name,
-                    u.role = 'hiring_manager',
-                    u.created_at = datetime()
-            """, {"email": hr_email, "password_hash": hr_password, "name": hr_name})
-            print(f"Created HR account directly: {hr_email}")
-    else:
-        # Check if user already exists
-        hr_user = User.find_by_email(hr_email)
-        if not hr_user:
-            hr_user = User.create(hr_email, hr_password, hr_name, "hiring_manager")
-            print(f"Created HR account: {hr_email}")
-    
-    # Make the HR account an admin
-    with kg.driver.session() as session:
-        session.run("""
-            MATCH (u:User {email: $email})
-            SET u.role = 'admin'
-        """, {"email": hr_email})
-        print(f"Promoted {hr_email} to admin")
-        
-        # Link all existing jobs to the HR account
-        job_count = session.run("""
-            MATCH (j:Job)
-            SET j.owner_email = $email
-            WITH j
-            MATCH (u:User {email: $email})
-            MERGE (u)-[:CREATED]->(j)
-            RETURN count(j) as count
-        """, {"email": hr_email}).single()["count"]
-        
-        print(f"Assigned {job_count} jobs to {hr_email}")
-    
-    # Create test candidate accounts (up to 30)
-    with kg.driver.session() as session:
-        # Get all candidate profiles
-        candidates = session.run("""
-            MATCH (c:Candidate)
-            RETURN c.resume_id as resume_id, c.name as name, c.email as email
-            LIMIT 30
-        """).values()
-        
-        # Create candidate accounts and link them to profiles
-        for resume_id, name, candidate_email in candidates:
-            # Generate an email if not present
-            email = candidate_email or f"candidate_{resume_id}@example.com"
-            password = generate_password_hash("password123")
-            
-            if User is None:
-                # Create directly with Cypher
-                session.run("""
-                    MERGE (u:User {email: $email})
-                    SET u.password_hash = $password_hash,
-                        u.name = $name,
-                        u.role = 'candidate',
-                        u.profile_id = $profile_id,
-                        u.created_at = datetime()
-                """, {
-                    "email": email, 
-                    "password_hash": password, 
-                    "name": name,
-                    "profile_id": resume_id
-                })
-                print(f"Created candidate account directly: {email} linked to {resume_id}")
-            else:
-                # Use the User class
-                candidate_user = User.find_by_email(email)
-                if not candidate_user:
-                    candidate_user = User.create(email, password, name, "candidate", resume_id)
-                    print(f"Created candidate account: {email} linked to {resume_id}")
-                else:
-                    # Make sure profile_id is set
-                    candidate_user.update_profile_id(resume_id)
-                    print(f"Updated candidate account: {email} linked to {resume_id}")
-    
-    print("Test accounts created successfully")
 
 def clear_database(force=False):
     """Clear all data from the Neo4j database."""
@@ -740,26 +721,15 @@ def clear_database(force=False):
         except ImportError:
             pass  # dotenv is optional
     
-    from src.knowledge_graph.model import KnowledgeGraph
-    
-    if not force:
-        # Ask for confirmation before clearing
-        confirm = input("This will delete ALL data from the Neo4j database. Are you sure? (y/n): ")
-        if confirm.lower() != 'y':
-            print("Operation cancelled.")
-            return False
+    from src.backend.services.graph_service import GraphService
     
     print("Connecting to Neo4j database...")
-    kg = KnowledgeGraph()
-    kg.connect()
+    kg = GraphService()
     
     try:
-        print("Clearing database (this might take a while)...")
-        with kg.driver.session() as session:
-            session.run("MATCH (n) DETACH DELETE n")
-        
-        print("Database cleared successfully!")
-        return True
+        # Use the GraphService clear_database method
+        result = kg.clear_database(force)
+        return result
     finally:
         kg.close()
 
@@ -793,19 +763,17 @@ def main():
         clear_database(args.force)
     elif args.create_accounts_only:
         # Only create test accounts
-        from src.knowledge_graph.model import KnowledgeGraph
-        kg = KnowledgeGraph()
-        kg.connect()
-        create_test_accounts(kg)
+        from src.backend.services.graph_service import GraphService
+        kg = GraphService()
+        kg.create_test_accounts()
         kg.close()
     else:
         # Use the ETLPipeline instead of the legacy functions
-        from src.knowledge_graph.model import KnowledgeGraph
+        from src.backend.services.graph_service import GraphService
         from src.config import NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD
         
         # Initialize knowledge graph
-        kg = KnowledgeGraph(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
-        kg.connect()  # Explicitly connect to the database
+        kg = GraphService(NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD)
         
         # Create ETL pipeline
         data_dir = args.data_dir or DATA_DIR
@@ -820,7 +788,7 @@ def main():
         
         # Create test accounts regardless of pipeline success
         try:
-            create_test_accounts(kg)
+            kg.create_test_accounts()
         except Exception as e:
             print(f"Warning: Could not create test accounts: {str(e)}")
         

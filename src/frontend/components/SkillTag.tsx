@@ -27,9 +27,22 @@ export default function SkillTag({
   linkToSkill = false,
   isPrimary = false,
 }: SkillTagProps) {
-  // Determine background color based on proficiency or importance
+  // Determine background color based on proficiency
   const getBgColor = () => {
-    if (isPrimary) {
+    if (proficiency) {
+      switch (proficiency) {
+        case "Beginner":
+          return "bg-blue-50 text-blue-700";
+        case "Intermediate":
+          return "bg-green-50 text-green-700";
+        case "Advanced":
+          return "bg-purple-50 text-purple-700";
+        case "Expert":
+          return "bg-orange-50 text-orange-700";
+        default:
+          return "bg-gray-100 text-gray-800";
+      }
+    } else if (isPrimary) {
       return "bg-indigo-100 text-indigo-800";
     } else {
       return "bg-gray-100 text-gray-800";
@@ -43,15 +56,15 @@ export default function SkillTag({
     } else if (importance && importance >= 6) {
       return "font-semibold";
     }
-    return "font-normal";
+    return "font-medium";
   };
 
   // Border style for primary/secondary skills
   const getBorderStyle = () => {
     if (isPrimary) {
-      return "border-2 border-indigo-500";
+      return "border-2 border-indigo-300";
     }
-    return "border border-gray-300";
+    return "border border-gray-200";
   };
 
   // Generate importance indicator stars
@@ -79,19 +92,30 @@ export default function SkillTag({
     );
   };
 
+  // Get proficiency badge
+  const getProficiencyBadge = () => {
+    if (!proficiency) return null;
+
+    const badgeColors = {
+      Beginner: "bg-blue-100 text-blue-800",
+      Intermediate: "bg-green-100 text-green-800",
+      Advanced: "bg-purple-100 text-purple-800",
+      Expert: "bg-orange-100 text-orange-800",
+    };
+
+    return (
+      <span
+        className={`ml-1 text-xs px-1.5 py-0.5 rounded-md font-medium ${badgeColors[proficiency]}`}
+      >
+        {proficiency}
+      </span>
+    );
+  };
+
   const TagContent = () => (
     <>
       <span className={`${getFontWeight()}`}>{skill.name}</span>
-      {proficiency && (
-        <span className="ml-1 text-xs px-1 bg-white bg-opacity-30 rounded">
-          {proficiency}
-        </span>
-      )}
-      {years && (
-        <span className="ml-1 text-xs px-1 bg-white bg-opacity-30 rounded">
-          {years}yr
-        </span>
-      )}
+      <div className="flex items-center ml-1">{getProficiencyBadge()}</div>
       {getImportanceIndicator()}
     </>
   );
@@ -100,7 +124,7 @@ export default function SkillTag({
     return (
       <Link
         href={`/skills/${skill.skill_id}`}
-        className={`inline-flex items-center px-3 py-1 rounded-full text-sm mr-2 mb-2 ${getBgColor()} ${getBorderStyle()} hover:opacity-80 shadow-sm`}
+        className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm mr-2 mb-2 ${getBgColor()} ${getBorderStyle()} hover:opacity-80 shadow-sm transition-colors`}
       >
         <TagContent />
       </Link>
@@ -109,7 +133,7 @@ export default function SkillTag({
 
   return (
     <div
-      className={`inline-flex items-center px-3 py-1 rounded-full text-sm mr-2 mb-2 ${getBgColor()} ${getBorderStyle()} cursor-pointer hover:opacity-80 shadow-sm`}
+      className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm mr-2 mb-2 ${getBgColor()} ${getBorderStyle()} cursor-pointer hover:opacity-80 shadow-sm transition-colors`}
       onClick={onClick}
     >
       <TagContent />

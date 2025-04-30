@@ -73,6 +73,7 @@ export default function EditJob({ params }: { params: { jobId: string } }) {
       try {
         setLoadingJob(true);
         const jobData = await apiClient.getJob(jobId);
+        console.log("Loaded job data:", jobData);
 
         // Set basic information
         setTitle(jobData.title || "");
@@ -80,7 +81,10 @@ export default function EditJob({ params }: { params: { jobId: string } }) {
         setLocation(jobData.location || "");
         setDomain(jobData.domain || "");
         setJobType(jobData.job_type || "Full-time");
-        setSummary(jobData.summary || "");
+
+        // Handle summary field (might come from description or summary)
+        setSummary(jobData.summary || jobData.description || "");
+
         setSalaryRange(jobData.salary_range || "");
 
         // Set responsibilities and qualifications
@@ -94,8 +98,22 @@ export default function EditJob({ params }: { params: { jobId: string } }) {
 
         // Set skills
         if (jobData.skills && jobData.skills.length > 0) {
-          const primary = jobData.skills.filter((s) => s.is_primary);
-          const secondary = jobData.skills.filter((s) => !s.is_primary);
+          // Filter by is_primary flag or by relationship_type
+          const primary = jobData.skills.filter(
+            (s) =>
+              s.is_primary === true ||
+              s.relationship_type === "REQUIRES_PRIMARY"
+          );
+
+          const secondary = jobData.skills.filter(
+            (s) =>
+              s.is_primary === false ||
+              s.relationship_type === "REQUIRES_SECONDARY"
+          );
+
+          console.log("Primary skills:", primary);
+          console.log("Secondary skills:", secondary);
+
           setPrimarySkills(primary);
           setSecondarySkills(secondary);
         }
@@ -348,16 +366,17 @@ export default function EditJob({ params }: { params: { jobId: string } }) {
                 required
               >
                 <option value="">Select Domain</option>
-                <option value="technology">Technology</option>
-                <option value="healthcare">Healthcare</option>
-                <option value="finance">Finance</option>
-                <option value="education">Education</option>
-                <option value="manufacturing">Manufacturing</option>
-                <option value="retail">Retail</option>
+                <option value="software_development">
+                  Software Development
+                </option>
+                <option value="data_science">Data Science</option>
+                <option value="web_development">Web Development</option>
+                <option value="cybersecurity">Cybersecurity</option>
+                <option value="design">Design</option>
                 <option value="marketing">Marketing</option>
-                <option value="consulting">Consulting</option>
-                <option value="government">Government</option>
-                <option value="nonprofit">Nonprofit</option>
+                <option value="finance">Finance</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="education">Education</option>
                 <option value="other">Other</option>
               </select>
             </div>

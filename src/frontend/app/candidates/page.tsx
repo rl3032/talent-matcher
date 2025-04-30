@@ -29,12 +29,21 @@ export default function CandidatesPage() {
 
   // Check if user has permission to access this page
   useEffect(() => {
+    console.log(
+      "User state in candidates page:",
+      user ? `${user.role} (${user.email})` : "not logged in"
+    );
+
     if (user && user.role !== "hiring_manager" && user.role !== "admin") {
+      console.log("User has wrong role, redirecting to home");
       // Immediately redirect to home page for job seekers
       router.push("/");
     } else if (!user) {
+      console.log("No user, redirecting to login");
       // Redirect non-authenticated users to login page
       router.push("/auth/login");
+    } else {
+      console.log("User authorized to view candidates page");
     }
   }, [user, router]);
 
@@ -42,6 +51,7 @@ export default function CandidatesPage() {
     const fetchCandidates = async () => {
       // Don't fetch if no user or unauthorized role
       if (!user || (user.role !== "hiring_manager" && user.role !== "admin")) {
+        setUnauthorized(true);
         return;
       }
 
@@ -52,7 +62,13 @@ export default function CandidatesPage() {
         // Check for error message in response
         if (response.error) {
           setError(response.error);
-          setUnauthorized(true);
+          // If the error is related to authentication, mark as unauthorized
+          if (
+            response.error.includes("auth") ||
+            response.error.includes("permission")
+          ) {
+            setUnauthorized(true);
+          }
           return;
         }
 
@@ -62,15 +78,24 @@ export default function CandidatesPage() {
           titles: response.filters?.titles || [],
         });
         setError(null);
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error fetching candidates:", err);
-        setError("Failed to load candidates. Please try again later.");
-        // Check if it's likely an authorization error
+
+        // Handle different types of errors
         if (
-          !user ||
-          (user.role !== "hiring_manager" && user.role !== "admin")
+          err.message.includes("Authentication") ||
+          err.message.includes("log in")
         ) {
+          setError(err.message);
           setUnauthorized(true);
+          // Redirect to login page after a short delay
+          setTimeout(() => {
+            router.push("/auth/login");
+          }, 2000);
+        } else {
+          setError(
+            err.message || "Failed to load candidates. Please try again later."
+          );
         }
       } finally {
         setLoading(false);
@@ -78,7 +103,7 @@ export default function CandidatesPage() {
     };
 
     fetchCandidates();
-  }, [user]);
+  }, [user, router]);
 
   // Format a value for display (convert snake_case to Title Case)
   const formatForDisplay = (value: string): string => {

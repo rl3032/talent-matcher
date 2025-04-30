@@ -5,6 +5,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import { apiClient } from "./api";
 
 // Define user type
 interface User {
@@ -60,20 +61,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       if (token) {
         try {
-          const response = await fetch("/api/auth/me", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            setUser(data.user);
-          } else {
-            localStorage.removeItem("accessToken");
-          }
+          // Use the apiClient to get user profile
+          const data = await apiClient.getUserProfile();
+          setUser(data.user);
         } catch (err) {
           console.error("Authentication error:", err);
+          localStorage.removeItem("accessToken");
         }
       }
 
@@ -89,24 +82,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setError(null);
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem("accessToken", data.access_token);
-        setUser(data.user);
-      } else {
-        setError(data.error || "Login failed");
-      }
-    } catch (err) {
-      setError("An error occurred during login");
+      // Use the apiClient for login
+      const data = await apiClient.login(email, password);
+      localStorage.setItem("accessToken", data.access_token);
+      setUser(data.user);
+    } catch (err: any) {
+      setError(err.message || "An error occurred during login");
       console.error("Login error:", err);
     } finally {
       setLoading(false);
@@ -124,24 +105,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setError(null);
 
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password, role }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem("accessToken", data.access_token);
-        setUser(data.user);
-      } else {
-        setError(data.error || "Registration failed");
-      }
-    } catch (err) {
-      setError("An error occurred during registration");
+      // Use the apiClient for registration
+      const data = await apiClient.register({ name, email, password, role });
+      localStorage.setItem("accessToken", data.access_token);
+      setUser(data.user);
+    } catch (err: any) {
+      setError(err.message || "An error occurred during registration");
       console.error("Registration error:", err);
     } finally {
       setLoading(false);

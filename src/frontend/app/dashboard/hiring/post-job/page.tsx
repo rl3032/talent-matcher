@@ -42,9 +42,12 @@ export default function PostJob() {
   const [error, setError] = useState<string | null>(null);
   const [loadingSkills, setLoadingSkills] = useState(true);
 
-  // Redirect if not logged in or not a hiring manager
+  // Redirect if not logged in or not a hiring manager or admin
   useEffect(() => {
-    if (!loading && (!user || user.role !== "hiring_manager")) {
+    if (
+      !loading &&
+      (!user || (user.role !== "hiring_manager" && user.role !== "admin"))
+    ) {
       router.push("/auth/login");
     }
   }, [user, loading, router]);
@@ -182,11 +185,22 @@ export default function PostJob() {
       domain,
       job_type: jobType,
       summary,
+      description: summary,
       responsibilities: responsibilitiesArray,
       qualifications: qualificationsArray,
       salary_range: salaryRange || "Competitive",
-      primary_skills: primarySkills,
-      secondary_skills: secondarySkills,
+      skills: {
+        primary: primarySkills.map((skill) => ({
+          skill_id: skill.skill_id,
+          proficiency: skill.proficiency || "Intermediate",
+          importance: skill.importance || 0.7,
+        })),
+        secondary: secondarySkills.map((skill) => ({
+          skill_id: skill.skill_id,
+          proficiency: skill.proficiency || "Beginner",
+          importance: skill.importance || 0.4,
+        })),
+      },
     };
 
     try {

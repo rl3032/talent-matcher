@@ -10,6 +10,9 @@ interface MissingSkill {
   missing_skill: string;
   category: string;
   importance: number;
+  name?: string;
+  skill_id?: string;
+  proficiency?: string;
 }
 
 interface RelatedSkill {
@@ -92,8 +95,19 @@ export default function SkillGapAnalysis({
                 className="flex items-center p-2 bg-gray-50 rounded"
               >
                 <span className="w-3 h-3 mr-2 rounded-full bg-red-500"></span>
-                <span className="font-medium">{skill.missing_skill}</span>
-                <span className="ml-2 text-gray-500">({skill.category})</span>
+                <span className="font-medium">
+                  {skill.name
+                    ? skill.name
+                    : skill.missing_skill &&
+                      skill.missing_skill !== "(tools)" &&
+                      skill.missing_skill !== "(domain)" &&
+                      skill.missing_skill !== "(frameworks)"
+                    ? skill.missing_skill
+                    : `Skill ${index + 1}`}
+                </span>
+                {skill.category && (
+                  <span className="ml-2 text-gray-500">({skill.category})</span>
+                )}
                 {skill.importance && (
                   <span className="ml-auto text-sm text-gray-600">
                     Relevance:{" "}

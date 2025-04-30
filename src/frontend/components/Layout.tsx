@@ -88,6 +88,19 @@ export default function Layout({ children }: LayoutProps) {
                     My Dashboard
                   </Link>
                 )}
+
+                {user && user.role === "admin" && (
+                  <Link
+                    href="/dashboard/hiring"
+                    className={`px-3 py-2 rounded-md text-sm font-medium ${
+                      isActive("/dashboard/hiring")
+                        ? "bg-blue-100 text-blue-700"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    }`}
+                  >
+                    Admin Dashboard
+                  </Link>
+                )}
               </div>
             </div>
 
