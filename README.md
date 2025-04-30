@@ -90,36 +90,39 @@ This architecture provides:
 
 ### Running the Application
 
-The project provides a unified CLI through the `main.py` script:
+The project provides a unified CLI through the `run.py` script:
 
 ```bash
 # Start the backend server
-python main.py backend
+python run.py backend
 
 # Start the frontend development server
-python main.py frontend
+python run.py frontend
 
 # Load test data into the database
-python main.py load-data
+python run.py load-data
 
 # Generate synthetic test data
-python main.py generate-data
+python run.py generate-data
 
-# Run all tests
-python main.py test
+# Run tests
+python run.py test
+
+# Run tests with coverage
+python run.py test --coverage
 ```
 
 You can also get help for each command:
 
 ```bash
-python main.py --help
-python main.py <command> --help
+python run.py --help
+python run.py <command> --help
 ```
 
 For example, to run the backend on a specific port:
 
 ```bash
-python main.py backend --port 5000 --host localhost
+python run.py backend --port 5000 --host localhost
 ```
 
 After starting both servers, open your browser and navigate to `http://localhost:3000`
@@ -128,16 +131,15 @@ After starting both servers, open your browser and navigate to `http://localhost
 
 The project includes comprehensive unit and integration tests for the backend.
 
-### Running Tests
-
-To run all tests and generate a coverage report:
+To run tests using pytest directly:
 
 ```bash
 # Run all tests
-python run_tests.py
-```
+pytest tests/
 
-This will run both unit tests and integration tests and generate a coverage report.
+# Run with coverage
+pytest tests/ --cov=src --cov-report=html:coverage_html
+```
 
 ### Test Structure
 

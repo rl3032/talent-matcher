@@ -7,6 +7,7 @@ This script provides a unified command-line interface for all Talent Matcher ope
 
 import argparse
 import sys
+import subprocess
 
 def main():
     parser = argparse.ArgumentParser(description="Talent Matcher CLI")
@@ -34,6 +35,8 @@ def main():
     
     # Run tests command
     tests_parser = subparsers.add_parser("test", help="Run tests")
+    tests_parser.add_argument("--coverage", action="store_true", help="Generate test coverage report")
+    tests_parser.add_argument("path", nargs="?", default="tests/", help="Path to test directory or file")
     
     args = parser.parse_args()
     
@@ -50,9 +53,21 @@ def main():
         from src.frontend.cli import run_frontend
         return run_frontend()
     elif args.command == "test":
-        from run_tests import run_all_tests
-        result = run_all_tests()
-        return 0 if result.wasSuccessful() else 1
+        print("Running Talent Matcher Tests...")
+        cmd = ["pytest", args.path]
+        
+        if args.coverage:
+            cmd = ["pytest", args.path, "--cov=src", "--cov-report=term", "--cov-report=html:coverage_html"]
+            print("Generating coverage report...")
+        
+        try:
+            result = subprocess.run(cmd)
+            if args.coverage:
+                print("\nCoverage report generated in coverage_html/")
+            return result.returncode
+        except Exception as e:
+            print(f"Error running tests: {str(e)}")
+            return 1
     else:
         parser.print_help()
         return 1
