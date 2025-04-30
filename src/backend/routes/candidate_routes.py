@@ -210,16 +210,24 @@ def upload_resume():
     # This endpoint would handle file upload and processing
     # For now we'll just create a candidate from JSON data
     
-    # Get request data
-    resume_data = request.json
-    
-    # Create candidate
-    result = candidate_service.create_candidate(resume_data)
-    
-    if not result['success']:
-        return jsonify({"error": result['error']}), 400
-    
-    return jsonify({
-        "resume_id": result['resume_id'],
-        "message": "Resume uploaded and processed successfully"
-    }), 201 
+    try:
+        # Get request data
+        resume_data = request.json
+        print(f"Resume upload request received from: {current_user.email if current_user else 'unknown user'}")
+        print(f"Resume data keys: {resume_data.keys() if resume_data else 'No data'}")
+        
+        # Create candidate
+        result = candidate_service.create_candidate(resume_data)
+        
+        if not result['success']:
+            print(f"Resume upload failed: {result['error']}")
+            return jsonify({"error": result['error']}), 400
+        
+        print(f"Resume uploaded successfully: {result['resume_id']}")
+        return jsonify({
+            "resume_id": result['resume_id'],
+            "message": "Resume uploaded and processed successfully"
+        }), 201
+    except Exception as e:
+        print(f"Exception in resume upload: {str(e)}")
+        return jsonify({"error": f"Resume upload failed: {str(e)}"}), 500 

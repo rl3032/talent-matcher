@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../../../lib/AuthContext";
 import { useRouter } from "next/navigation";
 import Layout from "../../../../components/Layout";
+import { apiClient } from "../../../../lib/api";
 
 interface Skill {
   skill_id: string;
@@ -299,6 +300,26 @@ export default function UploadResume() {
       return;
     }
 
+    // Format education data to match backend expectations
+    const formattedEducations = educations.map((edu) => ({
+      institution: edu.institution,
+      degree: edu.degree,
+      field: edu.degree, // Use degree as field if no specific field is available
+      start_date: `${edu.graduation_year - 4}-09-01`, // Estimate 4 years before graduation
+      end_date: `${edu.graduation_year}-06-01`, // Use graduation year for end date
+      gpa: null,
+    }));
+
+    // Format experience data to match backend expectations
+    const formattedExperiences = experiences.map((exp) => ({
+      title: exp.job_title, // Map job_title to title
+      company: exp.company,
+      start_date: exp.start_date,
+      end_date: exp.end_date,
+      description: exp.description,
+      skills_used: exp.skills_used,
+    }));
+
     // Prepare resume data
     const resumeData = {
       name,
@@ -307,8 +328,8 @@ export default function UploadResume() {
       location,
       title,
       summary,
-      education: educations,
-      experience: experiences,
+      education: formattedEducations,
+      experience: formattedExperiences,
       certifications,
       languages,
       skills: {
@@ -326,24 +347,28 @@ export default function UploadResume() {
         return;
       }
 
-      const response = await fetch("/api/resumes/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(resumeData),
-      });
+      console.log(
+        "Submitting resume data with",
+        `${coreSkills.length} core skills, `,
+        `${secondarySkills.length} secondary skills, `,
+        `${formattedExperiences.length} experiences, `,
+        `${formattedEducations.length} education entries`
+      );
 
-      const data = await response.json();
+      try {
+        const data = await apiClient.uploadResume(resumeData);
 
-      if (response.ok) {
+        console.log("Resume upload successful:", data);
+
         // Update user profile with resume ID
         updateUser({ profile_id: data.resume_id });
         // Navigate to the candidate dashboard
         router.push("/dashboard/candidate");
-      } else {
-        setError(data.error || "Failed to upload resume. Please try again.");
+      } catch (apiError: any) {
+        console.error("Resume upload failed:", apiError);
+        setError(
+          apiError.message || "Failed to upload resume. Please try again."
+        );
       }
     } catch (error) {
       console.error("Error uploading resume:", error);

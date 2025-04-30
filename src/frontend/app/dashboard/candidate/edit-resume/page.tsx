@@ -556,17 +556,18 @@ export default function EditResume() {
                   className="w-full p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">Select Domain</option>
-                  <option value="technology">Technology</option>
-                  <option value="healthcare">Healthcare</option>
-                  <option value="finance">Finance</option>
-                  <option value="education">Education</option>
-                  <option value="manufacturing">Manufacturing</option>
-                  <option value="retail">Retail</option>
+                  <option value="software_development">
+                    Software Development
+                  </option>
+                  <option value="data_science">Data Science</option>
+                  <option value="web_development">Web Development</option>
+                  <option value="cybersecurity">Cybersecurity</option>
+                  <option value="design">Design</option>
                   <option value="marketing">Marketing</option>
-                  <option value="consulting">Consulting</option>
-                  <option value="government">Government</option>
-                  <option value="nonprofit">Nonprofit</option>
-                  <option value="other">Other</option>
+                  <option value="finance">Finance</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="education">Education</option>
+                  <option value="general">General</option>
                 </select>
               </div>
             </div>

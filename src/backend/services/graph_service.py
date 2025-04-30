@@ -128,7 +128,7 @@ class GraphService:
                 # Get jobs needing embeddings
                 job_results = session.run("""
                     MATCH (j:Job)
-                    WHERE NOT EXISTS(j.embedding)
+                    WHERE j.embedding IS NULL
                     RETURN j.job_id AS job_id, j.title AS title, 
                            j.description AS description, j.responsibilities AS responsibilities,
                            j.qualifications AS qualifications
@@ -170,7 +170,7 @@ class GraphService:
                 # Get candidates needing embeddings
                 candidate_results = session.run("""
                     MATCH (c:Candidate)
-                    WHERE NOT EXISTS(c.embedding)
+                    WHERE c.embedding IS NULL
                     RETURN c.resume_id AS resume_id, c.name AS name, 
                            c.title AS title, c.summary AS summary
                 """)
@@ -212,7 +212,7 @@ class GraphService:
                 # Get skills needing embeddings
                 skill_results = session.run("""
                     MATCH (s:Skill)
-                    WHERE NOT EXISTS(s.embedding)
+                    WHERE s.embedding IS NULL
                     RETURN s.skill_id AS skill_id, s.name AS name, 
                            s.category AS category
                 """)
@@ -294,6 +294,7 @@ class GraphService:
     def create_test_accounts(self):
         """Create test admin, HR, and candidate accounts and link them to test data."""
         from werkzeug.security import generate_password_hash
+        from src.backend.services.auth_service import AuthService
         
         # Create User schema directly with Cypher instead of relying on the User class
         with self.driver.session() as session:
@@ -303,50 +304,30 @@ class GraphService:
             except Exception as e:
                 print(f"Warning: Could not create constraint: {str(e)}")
         
-        # Now import the User class
-        try:
-            from src.api.app import User
-        except ImportError:
-            try:
-                from api.app import User
-            except ImportError:
-                print("Warning: Could not import User class, creating users directly with Cypher")
-                User = None
-        
         print("Creating test accounts...")
         
         # Create admin HR account
         hr_email = "hr@example.com"
-        hr_password = generate_password_hash("password123")
+        hr_password = "password123"
         hr_name = "Test HR Manager"
         
-        # Create HR user directly with Cypher if User class is not available
-        if User is None:
-            with self.driver.session() as session:
-                session.run("""
-                    MERGE (u:User {email: $email})
-                    SET u.password_hash = $password_hash,
-                        u.name = $name,
-                        u.role = 'hiring_manager',
-                        u.created_at = datetime()
-                """, {"email": hr_email, "password_hash": hr_password, "name": hr_name})
-                print(f"Created HR account directly: {hr_email}")
-        else:
-            # Check if user already exists
-            hr_user = User.find_by_email(hr_email)
-            if not hr_user:
-                hr_user = User.create(hr_email, hr_password, hr_name, "hiring_manager")
+        # Create or update HR user
+        auth_service = AuthService.get_instance(self)
+        hr_user = auth_service.find_user_by_email(hr_email)
+        if not hr_user:
+            result = auth_service.register_user(hr_email, hr_password, hr_name, "hiring_manager")
+            if result['success']:
                 print(f"Created HR account: {hr_email}")
+            else:
+                print(f"Failed to create HR account: {result['error']}")
         
         # Make the HR account an admin
-        with self.driver.session() as session:
-            session.run("""
-                MATCH (u:User {email: $email})
-                SET u.role = 'admin'
-            """, {"email": hr_email})
+        admin_result = auth_service.make_admin(hr_email)
+        if admin_result['success']:
             print(f"Promoted {hr_email} to admin")
-            
-            # Link all existing jobs to the HR account
+        
+        # Link all existing jobs to the HR account
+        with self.driver.session() as session:
             job_count = session.run("""
                 MATCH (j:Job)
                 SET j.owner_email = $email
@@ -371,36 +352,24 @@ class GraphService:
             for resume_id, name, candidate_email in candidates:
                 # Generate an email if not present
                 email = candidate_email or f"candidate_{resume_id}@example.com"
-                password = generate_password_hash("password123")
+                password = "password123"
                 
-                if User is None:
-                    # Create directly with Cypher
-                    session.run("""
-                        MERGE (u:User {email: $email})
-                        SET u.password_hash = $password_hash,
-                            u.name = $name,
-                            u.role = 'candidate',
-                            u.profile_id = $profile_id,
-                            u.created_at = datetime()
-                    """, {
-                        "email": email, 
-                        "password_hash": password, 
-                        "name": name,
-                        "profile_id": resume_id
-                    })
-                    print(f"Created candidate account directly: {email} linked to {resume_id}")
-                else:
-                    # Use the User class
-                    candidate_user = User.find_by_email(email)
-                    if not candidate_user:
-                        candidate_user = User.create(email, password, name, "candidate", resume_id)
+                # Check if user exists
+                candidate_user = auth_service.find_user_by_email(email)
+                if not candidate_user:
+                    # Create new user
+                    result = auth_service.register_user(email, password, name, "candidate", resume_id)
+                    if result['success']:
                         print(f"Created candidate account: {email} linked to {resume_id}")
                     else:
-                        # Make sure profile_id is set
-                        candidate_user.update_profile_id(resume_id)
+                        print(f"Failed to create candidate account: {result['error']}")
+                else:
+                    # Update profile_id if needed
+                    if candidate_user.profile_id != resume_id:
+                        auth_service.update_user(email, {"profile_id": resume_id})
                         print(f"Updated candidate account: {email} linked to {resume_id}")
         
-        print("Test accounts created successfully") 
+        print("Test accounts created successfully")
 
     def process_neo4j_datetime(self, value):
         """Convert Neo4j DateTime objects to ISO format strings.

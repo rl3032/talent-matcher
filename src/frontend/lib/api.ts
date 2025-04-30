@@ -290,6 +290,47 @@ export const apiClient = {
     return response.json();
   },
 
+  // Upload new resume
+  async uploadResume(resumeData: any): Promise<any> {
+    // Get token from localStorage
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      throw new Error("You must be logged in to upload a resume");
+    }
+
+    const response = await fetch(`${API_BASE_URL}/candidates/resume/upload`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(resumeData),
+    });
+
+    // Get the response content
+    const responseText = await response.text();
+    let parsedResponse;
+
+    try {
+      // Try to parse as JSON
+      parsedResponse = responseText ? JSON.parse(responseText) : {};
+    } catch (e) {
+      console.error("Error parsing response:", e);
+      parsedResponse = { error: responseText || "Unknown error" };
+    }
+
+    if (!response.ok) {
+      console.error("Upload resume failed:", response.status, parsedResponse);
+      throw new Error(
+        parsedResponse.error ||
+          "Failed to upload resume. Server returned status: " + response.status
+      );
+    }
+
+    return parsedResponse;
+  },
+
   // Update job posting
   async updateJob(jobId: string, jobData: any): Promise<any> {
     const token = localStorage.getItem("accessToken");
