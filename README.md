@@ -88,20 +88,41 @@ This architecture provides:
    JWT_SECRET_KEY=your_jwt_secret
    ```
 
-5. Start the backend server
+### Running the Application
 
-   ```bash
-   python run_backend.py
-   ```
+The project provides a unified CLI through the `main.py` script:
 
-6. Start the frontend development server
+```bash
+# Start the backend server
+python main.py backend
 
-   ```bash
-   cd src/frontend
-   npm run dev
-   ```
+# Start the frontend development server
+python main.py frontend
 
-7. Open your browser and navigate to `http://localhost:3000`
+# Load test data into the database
+python main.py load-data
+
+# Generate synthetic test data
+python main.py generate-data
+
+# Run all tests
+python main.py test
+```
+
+You can also get help for each command:
+
+```bash
+python main.py --help
+python main.py <command> --help
+```
+
+For example, to run the backend on a specific port:
+
+```bash
+python main.py backend --port 5000 --host localhost
+```
+
+After starting both servers, open your browser and navigate to `http://localhost:3000`
 
 ## Testing
 
@@ -146,13 +167,12 @@ Talent Matcher supports three user roles, each with specific permissions:
 ## Project Structure
 
 - `/src`: All source code
-  - `/backend`: Flask API and backend services (new architecture)
+  - `/backend`: Flask API and backend services with layered architecture
     - `/models`: Data models
     - `/repositories`: Data access layer
     - `/routes`: API endpoints
     - `/services`: Business logic
     - `/utils`: Utility functions
-  - `/api`: Deprecated legacy API (will be removed in future versions)
   - `/frontend`: Next.js/React frontend application
     - `/app`: Next.js application routes
     - `/components`: Reusable React components

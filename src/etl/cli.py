@@ -1,27 +1,28 @@
 #!/usr/bin/env python
 """
-Data Loading Script for Talent Matcher
+Data Loading CLI for Talent Matcher
 
-This script runs the ETL pipeline to load test data into the Neo4j database.
-Run this script from the project root directory.
+This module provides CLI functionality to run the ETL pipeline and load test data 
+into the Neo4j database. Must be run from the project root directory.
 """
 
 import os
 import sys
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
-
-# Make sure we're running from the project root
-if not os.path.exists(os.path.join(os.getcwd(), 'src')):
-    print("Error: This script must be run from the project root directory")
-    sys.exit(1)
-
 # Import the data loader
 from src.etl.data_loader import initialize_knowledge_graph, ETLPipeline
 
 def main():
+    """Run the ETL pipeline to load data into the database."""
+    # Load environment variables
+    load_dotenv()
+    
+    # Make sure we're running from the project root
+    if not os.path.exists(os.path.join(os.getcwd(), 'src')):
+        print("Error: This script must be run from the project root directory")
+        sys.exit(1)
+        
     print("Initializing Knowledge Graph...")
     
     # Initialize the knowledge graph

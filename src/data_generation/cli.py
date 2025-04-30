@@ -1,26 +1,27 @@
 #!/usr/bin/env python
 """
-Data Generation Script for Talent Matcher
+Data Generation CLI for Talent Matcher
 
-This script generates synthetic resume and job description datasets for
-development, testing, and demonstration purposes.
+This module provides CLI functionality for generating synthetic resume 
+and job description datasets for development, testing, and demonstration purposes.
 """
 
-import argparse
 import sys
 from pathlib import Path
 from src.data_generation.generators import ResumeGenerator, JobGenerator
 
-def main():
+def main(args=None):
     """Generate a complete dataset of resumes and job descriptions."""
-    parser = argparse.ArgumentParser(description="Generate resume and job description datasets")
-    parser.add_argument("--num-resumes", type=int, default=100, help="Number of resumes to generate")
-    parser.add_argument("--num-jobs", type=int, default=100, help="Number of job descriptions to generate")
-    parser.add_argument("--output-dir", type=str, default="data/generated", help="Directory to save generated data")
-    parser.add_argument("--resume-only", action="store_true", help="Generate only resumes")
-    parser.add_argument("--job-only", action="store_true", help="Generate only job descriptions")
-    
-    args = parser.parse_args()
+    if args is None:
+        import argparse
+        parser = argparse.ArgumentParser(description="Generate resume and job description datasets")
+        parser.add_argument("--num-resumes", type=int, default=100, help="Number of resumes to generate")
+        parser.add_argument("--num-jobs", type=int, default=100, help="Number of job descriptions to generate")
+        parser.add_argument("--output-dir", type=str, default="data/generated", help="Directory to save generated data")
+        parser.add_argument("--resume-only", action="store_true", help="Generate only resumes")
+        parser.add_argument("--job-only", action="store_true", help="Generate only job descriptions")
+        
+        args = parser.parse_args()
     
     # Create output directory if it doesn't exist
     output_path = Path("data") / args.output_dir
